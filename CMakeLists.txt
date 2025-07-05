@@ -1,0 +1,48 @@
+add_library(atlas_common STATIC)
+
+target_sources(atlas_common PRIVATE
+    atlas_err.c
+    atlas_log.c
+    atlas_data.c
+    atlas_path.c
+)
+
+target_include_directories(atlas_common PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_link_libraries(atlas_common PUBLIC
+    stm32cubemx
+    handle_manager
+)
+
+target_compile_options(atlas_common PUBLIC
+    -std=c23
+    -Wall
+    -Wextra
+    -Wconversion
+    -Wshadow
+    -Wpedantic
+    -Wnarrowing
+    -Waddress
+    -pedantic
+    -Wdeprecated
+    -Wsign-conversion
+    -Wduplicated-cond
+    -Wduplicated-branches
+    -Wlogical-op
+    -Wnull-dereference
+    -Wdouble-promotion
+    -Wimplicit-fallthrough
+    -Wcast-align
+    -Wformat=2
+    -Wformat-security
+    -Wmissing-prototypes
+    -Wmissing-declarations
+    -Wstrict-prototypes
+    -Wold-style-definition
+    -Wundef
+    -Wvla
+    -Wpointer-arith
+    -Wstrict-aliasing=2
+)
