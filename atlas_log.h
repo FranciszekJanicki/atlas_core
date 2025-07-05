@@ -4,6 +4,6 @@
 #include <stdarg.h>
 #include <stddef.h>
 
-void atlas_log(char const *format, ...);
+void atlas_log(char const* format, ...);
 
 #endif // ATLAS_CORE_ATLAS_LOG_H
