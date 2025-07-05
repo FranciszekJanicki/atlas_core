@@ -1,22 +1,22 @@
-add_library(atlas_common STATIC)
+add_library(atlas_core STATIC)
 
-target_sources(atlas_common PRIVATE
+target_sources(atlas_core PRIVATE
     atlas_err.c
     atlas_log.c
     atlas_data.c
     atlas_path.c
 )
 
-target_include_directories(atlas_common PUBLIC
+target_include_directories(atlas_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(atlas_common PUBLIC
+target_link_libraries(atlas_core PUBLIC
     stm32cubemx
     handle_manager
 )
 
-target_compile_options(atlas_common PUBLIC
+target_compile_options(atlas_core PUBLIC
     -std=c23
     -Wall
     -Wextra
