@@ -3,7 +3,6 @@
 
 #include "FreeRTOS.h"
 #include "atlas_log.h"
-#include "stm32l4xx.h"
 #include "task.h"
 #include <assert.h>
 #include <stdio.h>

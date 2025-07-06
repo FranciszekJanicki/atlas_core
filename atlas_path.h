@@ -10,12 +10,14 @@
 typedef atlas_cartesian_data_t cartesian_path_point_t;
 
 typedef struct {
+    uint8_t points_num;
     cartesian_path_point_t points[ATLAS_PATH_MAX_POINTS];
 } atlas_cartesian_path_t;
 
 typedef atlas_joints_data_t altas_joints_path_point_t;
 
 typedef struct {
+    uint8_t points_num;
     altas_joints_path_point_t points[ATLAS_PATH_MAX_POINTS];
 } atlas_joints_path_t;
 

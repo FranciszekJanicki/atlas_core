@@ -35,8 +35,7 @@ void atlas_log(char const* format, ...)
     vsnprintf(log_buf, log_buf_len, format, args);
     va_end(args);
 
-    HAL_UART_Transmit(&huart2, log_buf, strlen(log_buf), strlen(log_buf));
-    // _write(0, log_buf, strlen(log_buf));
+    _write(0, log_buf, strlen(log_buf));
 
     if (use_heap_buf) {
         free(log_buf);
