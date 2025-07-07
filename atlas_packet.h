@@ -14,7 +14,7 @@ typedef enum {
     ATLAS_ROB_PACKET_TYPE_STOP_JOG,
 } atlas_rob_packet_type_t;
 
-typedef atlas_jog_t atlas_rob_packet_payload_jog_data_t;
+typedef atlas_data_t atlas_rob_packet_payload_jog_data_t;
 typedef atlas_path_t atlas_rob_packet_payload_path_data_t;
 typedef int atlas_rob_packet_payload_start_path_t;
 typedef int atlas_rob_packet_payload_stop_path_t;
