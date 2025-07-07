@@ -11,6 +11,7 @@
 typedef enum {
     ATLAS_PATH_TYPE_JOINTS,
     ATLAS_PATH_TYPE_CARTESIAN,
+    ATLAS_PATH_TYPE_NONE,
 } atlas_path_type_t;
 
 typedef struct {

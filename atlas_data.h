@@ -30,6 +30,7 @@ typedef struct {
 typedef enum {
     ATLAS_DATA_TYPE_JOINTS,
     ATLAS_DATA_TYPE_CARTESIAN,
+    ATLAS_DATA_TYPE_NONE,
 } atlas_data_type_t;
 
 typedef union {
