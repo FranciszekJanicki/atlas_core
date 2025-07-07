@@ -8,6 +8,9 @@ typedef struct {
     atlas_data_t data;
     atlas_state_t state;
     atlas_path_t path;
+    atlas_jog_t jog;
+    atlas_config_t config;
+    uint32_t path_index;
 } atlas_status_t;
 
 #endif // ATLAS_CORE_ATLAS_STATUS_H
