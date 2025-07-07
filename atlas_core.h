@@ -8,6 +8,7 @@
 #include "atlas_log.h"
 #include "atlas_packet.h"
 #include "atlas_path.h"
+#include "atlas_state.h"
 #include "atlas_utility.h"
 
 #endif // ATLAS_CORE_ATLAS_CORE_H
