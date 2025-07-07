@@ -19,6 +19,7 @@ typedef enum {
 typedef atlas_status_t atlas_packet_payload_status_t;
 typedef atlas_data_t atlas_packet_payload_data_t;
 typedef atlas_path_t atlas_packet_payload_path_t;
+typedef atlas_config_t atlas_packet_payload_config_t;
 
 typedef union {
     atlas_packet_payload_status_t status;
