@@ -4,6 +4,7 @@
 #include "atlas_config.h"
 #include "atlas_data.h"
 #include "atlas_err.h"
+#include "atlas_jog.h"
 #include "atlas_joint_num.h"
 #include "atlas_log.h"
 #include "atlas_packet.h"
