@@ -21,13 +21,9 @@ typedef struct {
     atlas_cartesian_data_t points[ATLAS_CARTESIAN_PATH_MAX_POINTS];
 } atlas_cartesian_path_t;
 
-typedef struct {
-    atlas_joints_path_t path;
-} atlas_path_payload_joints_t;
+typedef atlas_joints_path_t atlas_path_payload_joints_t;
 
-typedef struct {
-    atlas_cartesian_path_t path;
-} atlas_path_payload_cartesian_t;
+typedef atlas_cartesian_path_t atlas_path_payload_cartesian_t;
 
 typedef union {
     atlas_path_payload_joints_t joints;

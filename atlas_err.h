@@ -10,6 +10,7 @@ typedef enum {
     ATLAS_ERR_UNKNOWN_EVENT,
     ATLAS_ERR_UNKNOWN_NOTIFY,
     ATLAS_ERR_UNKNOWN_PACKET,
+    ATLAS_ERR_IMPROPER_STATE,
 } atlas_err_t;
 
 char const* atlas_err_to_string(atlas_err_t err);
