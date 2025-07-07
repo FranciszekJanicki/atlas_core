@@ -5,10 +5,9 @@
 
 typedef struct {
     uint32_t timestamp;
-    atlas_data_t meas_data;
-    atlas_data_t jog_data;
     atlas_state_t state;
-    atlas_path_t path;
+    atlas_joints_data_t data;
+    atlas_joints_path_t path;
     atlas_config_t config;
     uint32_t path_index;
 } atlas_status_t;

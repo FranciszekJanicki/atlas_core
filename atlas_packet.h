@@ -14,16 +14,39 @@ typedef enum {
     ATLAS_ROB_PACKET_TYPE_STOP_JOG,
 } atlas_rob_packet_type_t;
 
-typedef atlas_data_t atlas_rob_packet_payload_jog_data_t;
-typedef atlas_path_t atlas_rob_packet_payload_path_data_t;
-typedef int atlas_rob_packet_payload_start_path_t;
-typedef int atlas_rob_packet_payload_stop_path_t;
-typedef int atlas_rob_packet_payload_start_jog_t;
-typedef int atlas_rob_packet_payload_stop_jog_t;
+typedef struct {
+    atlas_joints_data_t data;
+} atlas_rob_packet_payload_joints_data_t;
+
+typedef struct {
+    atlas_cartesian_data_t data;
+} atlas_rob_packet_payload_cartesian_data_t;
+
+typedef struct {
+    atlas_joints_path_t path;
+} atlas_rob_packet_payload_joints_path_t;
+
+typedef struct {
+    atlas_cartesian_path_t path;
+} atlas_rob_packet_payload_cartesian_path_t;
+
+typedef struct {
+} atlas_rob_packet_payload_start_path_t;
+
+typedef struct {
+} atlas_rob_packet_payload_stop_path_t;
+
+typedef struct {
+} atlas_rob_packet_payload_start_jog_t;
+
+typedef struct {
+} atlas_rob_packet_payload_stop_jog_t;
 
 typedef union {
-    atlas_rob_packet_payload_jog_data_t jog_data;
-    atlas_rob_packet_payload_path_data_t path_data;
+    atlas_rob_packet_payload_joints_data_t joints_data;
+    atlas_rob_packet_payload_cartesian_data_t cartesian_data;
+    atlas_rob_packet_payload_joints_path_t joints_path;
+    atlas_rob_packet_payload_cartesian_path_t cartesian_path;
     atlas_rob_packet_payload_start_path_t start_path;
     atlas_rob_packet_payload_stop_path_t stop_path;
     atlas_rob_packet_payload_start_jog_t start_jog;
