@@ -21,6 +21,20 @@ typedef struct {
     atlas_cartesian_data_t points[ATLAS_CARTESIAN_PATH_MAX_POINTS];
 } atlas_cartesian_path_t;
 
+typedef union {
+    atlas_cartesian_path_t cartesian_path;
+    atlas_joints_path_t joints_path;
+} atlas_path_payload_t;
+
+typedef struct {
+    atlas_path_type_t type;
+    atlas_path_payload_t payload;
+} atlas_path_t;
+
+bool atlas_is_cartesian_path_equal(atlas_cartesian_path_t const* path1,
+                                   atlas_cartesian_path_t const* path2);
+bool atlas_is_joints_path_equal(atlas_joints_path_t const* path1, atlas_joints_path_t const* path2);
+
 void atlas_print_cartesian_path(atlas_cartesian_path_t const* path);
 void atlas_print_joints_path(atlas_joints_path_t const* path);
 

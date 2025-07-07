@@ -4,8 +4,6 @@
 #include <stdint.h>
 
 typedef struct {
-    uint32_t timestamp;
-    atlas_state_t state;
     atlas_joints_data_t data;
     atlas_joints_path_t path;
     atlas_config_t config;

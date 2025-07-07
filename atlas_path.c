@@ -2,6 +2,33 @@
 #include "atlas_data.h"
 #include "atlas_utility.h"
 
+bool atlas_is_cartesian_path_equal(atlas_cartesian_path_t const* path1,
+                                   atlas_cartesian_path_t const* path2)
+{
+    ATLAS_ASSERT(path1 && path2);
+
+    for (uint8_t num = 0U; num < ATLAS_CARTESIAN_PATH_MAX_POINTS; ++num) {
+        if (!atlas_is_cartesian_data_equal(&path1->points[num], &path2->points[num])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool atlas_is_joints_path_equal(atlas_joints_path_t const* path1, atlas_joints_path_t const* path2)
+{
+    ATLAS_ASSERT(path1 && path2);
+
+    for (uint8_t num = 0U; num < ATLAS_JOINTS_PATH_MAX_POINTS; ++num) {
+        if (!atlas_is_joints_data_equal(&path1->points[num], &path2->points[num])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void atlas_print_cartesian_path(atlas_cartesian_path_t const* path)
 {
     ATLAS_ASSERT(path);

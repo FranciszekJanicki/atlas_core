@@ -4,6 +4,30 @@
 #include "atlas_utility.h"
 #include <stdint.h>
 
+bool atlas_is_cartesian_data_equal(atlas_cartesian_data_t const* data1,
+                                   atlas_cartesian_data_t const* data2)
+{
+    ATLAS_ASSERT(data1 && data2);
+
+    return data1->position.x == data2->position.x && data1->position.y == data2->position.y &&
+           data1->position.z == data2->position.z && data1->orientation.x == data2->orientation.x &&
+           data1->orientation.y == data2->orientation.y &&
+           data1->orientation.z == data2->orientation.z;
+}
+
+bool atlas_is_joints_data_equal(atlas_joints_data_t const* data1, atlas_joints_data_t const* data2)
+{
+    ATLAS_ASSERT(data1 && data2);
+
+    for (uint8_t num = 0; num < ATLAS_JOINT_NUM; ++num) {
+        if (data1->positions[num] != data2->positions[num]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void atlas_print_cartesian_data(atlas_cartesian_data_t const* data)
 {
     ATLAS_ASSERT(data);

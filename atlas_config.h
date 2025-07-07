@@ -20,8 +20,7 @@ typedef struct {
     float32_t joints_delta_time;
 } atlas_joints_config_t;
 
-typedef struct {
-} atlas_kinematics_config_t;
+typedef int atlas_kinematics_config_t;
 
 typedef struct {
     atlas_joints_config_t joints_config;
@@ -30,11 +29,9 @@ typedef struct {
 
 typedef atlas_rob_config_t atlas_config_payload_rob_t;
 
-typedef struct {
-} atlas_ui_config_t;
+typedef int atlas_ui_config_t;
 
-typedef struct {
-} atlas_sd_config_t;
+typedef int atlas_sd_config_t;
 
 typedef struct {
     atlas_ui_config_t ui_config;
