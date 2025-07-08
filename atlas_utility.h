@@ -17,13 +17,6 @@
             ;                     \
     } while (0)
 
-#define ATLAS_ERR_CHECK(ERR)         \
-    do {                             \
-        if ((ERR) != ATLAS_ERR_OK) { \
-            ATLAS_PANIC();           \
-        }                            \
-    } while (0)
-
 #define ATLAS_RET_ON_ERR(ERR)      \
     do {                           \
         atlas_err_t err = (ERR);   \
@@ -55,6 +48,8 @@
         }                                                                                         \
     } while (0)
 
+#define ATLAS_ERR_CHECK(ERR) ATLAS_ASSERT((ERR) == ATLAS_ERR_OK)
+
 #else
 
 #define ATLAS_LOG(TAG, FMT, ...) \
@@ -72,6 +67,10 @@
 #define ATLAS_ASSERT(EXPR) \
     do {                   \
         (void)(EXPR);      \
+    } while (0)
+
+#define ATLAS_ERR_CHECK(ERR) \
+    do {                     \
     } while (0)
 
 #endif // DEBUG
