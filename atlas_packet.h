@@ -6,28 +6,19 @@
 #include "atlas_state.h"
 
 typedef enum {
-    ATLAS_ROB_PACKET_TYPE_DATA,
-    ATLAS_ROB_PACKET_TYPE_PATH,
-    ATLAS_ROB_PACKET_TYPE_START_PATH,
-    ATLAS_ROB_PACKET_TYPE_STOP_PATH,
-    ATLAS_ROB_PACKET_TYPE_START_JOG,
-    ATLAS_ROB_PACKET_TYPE_STOP_JOG,
+    ATLAS_ROB_PACKET_TYPE_JOINTS_DATA,
+    ATLAS_ROB_PACKET_TYPE_START_JOINTS,
+    ATLAS_ROB_PACKET_TYPE_STOP_JOINTS,
 } atlas_rob_packet_type_t;
 
-typedef atlas_data_t atlas_rob_packet_payload_data_t;
-typedef atlas_path_t atlas_rob_packet_payload_path_t;
-typedef int atlas_rob_packet_payload_start_path_t;
-typedef int atlas_rob_packet_payload_stop_path_t;
-typedef int atlas_rob_packet_payload_start_jog_t;
-typedef int atlas_rob_packet_payload_stop_jog_t;
+typedef atlas_joints_data_t atlas_rob_packet_payload_joints_data_t;
+typedef int atlas_rob_packet_payload_start_joints_t;
+typedef int atlas_rob_packet_payload_stop_joints_t;
 
 typedef union {
-    atlas_rob_packet_payload_data_t data;
-    atlas_rob_packet_payload_path_t path;
-    atlas_rob_packet_payload_start_path_t start_path;
-    atlas_rob_packet_payload_stop_path_t stop_path;
-    atlas_rob_packet_payload_start_jog_t start_jog;
-    atlas_rob_packet_payload_stop_jog_t stop_jog;
+    atlas_rob_packet_payload_joints_data_t joints_data;
+    atlas_rob_packet_payload_start_joints_t start_joints;
+    atlas_rob_packet_payload_stop_joints_t stop_joints;
 } atlas_rob_packet_payload_t;
 
 typedef struct {
@@ -36,13 +27,13 @@ typedef struct {
 } atlas_rob_packet_t;
 
 typedef enum {
-    ATLAS_HMI_PACKET_TYPE_DATA,
+    ATLAS_HMI_PACKET_TYPE_JOINTS_DATA,
 } atlas_hmi_packet_type_t;
 
-typedef atlas_data_t atlas_hmi_packet_payload_data_t;
+typedef atlas_joints_data_t atlas_hmi_packet_payload_joints_data_t;
 
 typedef union {
-    atlas_hmi_packet_payload_data_t data;
+    atlas_hmi_packet_payload_joints_data_t joints_data;
 } atlas_hmi_packet_payload_t;
 
 typedef struct {

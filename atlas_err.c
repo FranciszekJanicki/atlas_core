@@ -11,6 +11,8 @@ char const* atlas_err_to_string(atlas_err_t err)
             return "ATLAS_ERR_NOT_RUNNING";
         case ATLAS_ERR_ALREADY_RUNNING:
             return "ATLAS_ERR_ALREADY_RUNNING";
+        case ATLAS_ERR_UNKNOWN_ORIGIN:
+            return "ATLAS_ERR_UNKNOWN_ORIGIN";
         case ATLAS_ERR_UNKNOWN_EVENT:
             return "ATLAS_ERR_UNKNOWN_EVENT";
         case ATLAS_ERR_UNKNOWN_NOTIFY:
