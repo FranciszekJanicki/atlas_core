@@ -13,6 +13,8 @@ typedef enum {
 typedef struct {
     float32_t prop_gain, int_gain, dot_gain, sat_gain;
     float32_t min_speed, max_speed, min_position, max_position;
+    float32_t step_change;
+    float32_t current_limit;
 } atlas_joint_config_t;
 
 typedef struct {
