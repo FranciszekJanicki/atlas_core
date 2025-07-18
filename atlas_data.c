@@ -1,28 +1,9 @@
 #include "atlas_data.h"
-#include "atlas_joint_num.h"
 #include "atlas_log.h"
 #include "atlas_utility.h"
 #include <stdint.h>
 
-bool atlas_is_data_equal(atlas_data_t const* data1, atlas_data_t const* data2)
-{
-    ATLAS_ASSERT(data1 && data2);
-
-    if (data1->type != data2->type) {
-        return false;
-    }
-
-    if (data1->type == ATLAS_DATA_TYPE_JOINTS) {
-        return atlas_is_joints_data_equal(&data1->payload.joints_data, &data2->payload.joints_data);
-    } else if (data1->type == ATLAS_DATA_TYPE_CARTESIAN) {
-        return atlas_is_cartesian_data_equal(&data1->payload.cartesian_data,
-                                             &data2->payload.cartesian_data);
-    }
-
-    return false;
-}
-
-bool atlas_is_cartesian_data_equal(atlas_cartesian_data_t const* data1,
+bool atlas_cartesian_data_is_equal(atlas_cartesian_data_t const* data1,
                                    atlas_cartesian_data_t const* data2)
 {
     ATLAS_ASSERT(data1 && data2);
@@ -33,7 +14,7 @@ bool atlas_is_cartesian_data_equal(atlas_cartesian_data_t const* data1,
            data1->orientation.z == data2->orientation.z;
 }
 
-bool atlas_is_joints_data_equal(atlas_joints_data_t const* data1, atlas_joints_data_t const* data2)
+bool atlas_joints_data_is_equal(atlas_joints_data_t const* data1, atlas_joints_data_t const* data2)
 {
     ATLAS_ASSERT(data1 && data2);
 
@@ -46,18 +27,7 @@ bool atlas_is_joints_data_equal(atlas_joints_data_t const* data1, atlas_joints_d
     return true;
 }
 
-void atlas_print_data(atlas_data_t const* data)
-{
-    ATLAS_ASSERT(data);
-
-    if (data->type == ATLAS_DATA_TYPE_JOINTS) {
-        atlas_print_joints_data(&data->payload.joints_data);
-    } else if (data->type == ATLAS_DATA_TYPE_CARTESIAN) {
-        atlas_print_cartesian_data(&data->payload.cartesian_data);
-    }
-}
-
-void atlas_print_cartesian_data(atlas_cartesian_data_t const* data)
+void atlas_cartesian_data_print(atlas_cartesian_data_t const* data)
 {
     ATLAS_ASSERT(data);
 
@@ -70,7 +40,7 @@ void atlas_print_cartesian_data(atlas_cartesian_data_t const* data)
               (int32_t)data->orientation.z * 100);
 }
 
-void atlas_print_joints_data(atlas_joints_data_t const* data)
+void atlas_joints_data_print(atlas_joints_data_t const* data)
 {
     ATLAS_ASSERT(data);
 

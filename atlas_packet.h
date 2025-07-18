@@ -3,35 +3,30 @@
 
 #include "atlas_data.h"
 #include "atlas_path.h"
-#include "atlas_state.h"
 
 typedef enum {
-    ATLAS_ROBOT_PACKET_TYPE_READY,
-    ATLAS_ROBOT_PACKET_TYPE_FAULT,
-    ATLAS_ROBOT_PACKET_TYPE_DATA,
+    ATLAS_ROBOT_PACKET_TYPE_JOINT_READY,
+    ATLAS_ROBOT_PACKET_TYPE_JOINT_FAULT,
+    ATLAS_ROBOT_PACKET_TYPE_JOINT_DATA,
 } atlas_robot_packet_type_t;
 
 typedef enum {
-    ATLAS_ROBOT_PACKET_ORIGIN_1 = ATLAS_JOINT_NUM_1,
-    ATLAS_ROBOT_PACKET_ORIGIN_2 = ATLAS_JOINT_NUM_2,
-    ATLAS_ROBOT_PACKET_ORIGIN_3 = ATLAS_JOINT_NUM_3,
-    ATLAS_ROBOT_PACKET_ORIGIN_4 = ATLAS_JOINT_NUM_4,
-    ATLAS_ROBOT_PACKET_ORIGIN_5 = ATLAS_JOINT_NUM_5,
-    ATLAS_ROBOT_PACKET_ORIGIN_6 = ATLAS_JOINT_NUM_6,
+    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_1 = ATLAS_JOINT_NUM_1,
+    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_2 = ATLAS_JOINT_NUM_2,
+    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_3 = ATLAS_JOINT_NUM_3,
+    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_4 = ATLAS_JOINT_NUM_4,
+    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_5 = ATLAS_JOINT_NUM_5,
+    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_6 = ATLAS_JOINT_NUM_6,
 } atlas_robot_packet_origin_t;
 
-typedef struct {
-} atlas_robot_packet_payload_ready_t;
-typedef struct {
-} atlas_robot_packet_payload_fault_t;
-typedef struct {
-    float32_t position;
-} atlas_robot_packet_payload_data_t;
+typedef atlas_joint_ready_t atlas_robot_packet_payload_joint_ready_t;
+typedef atlas_joint_fault_t atlas_robot_packet_payload_joint_fault_t;
+typedef atlas_joint_data_t atlas_robot_packet_payload_joint_data_t;
 
 typedef union {
-    atlas_robot_packet_payload_ready_t ready;
-    atlas_robot_packet_payload_fault_t fault;
-    atlas_robot_packet_payload_data_t data;
+    atlas_robot_packet_payload_joint_ready_t joint_ready;
+    atlas_robot_packet_payload_joint_fault_t joint_fault;
+    atlas_robot_packet_payload_joint_data_t joint_data;
 } atlas_robot_packet_payload_t;
 
 typedef struct {
@@ -41,23 +36,19 @@ typedef struct {
 } atlas_robot_packet_t;
 
 typedef enum {
-    ATLAS_JOINT_PACKET_TYPE_START,
-    ATLAS_JOINT_PACKET_TYPE_STOP,
-    ATLAS_JOINT_PACKET_TYPE_DATA,
+    ATLAS_JOINT_PACKET_TYPE_START_JOINT,
+    ATLAS_JOINT_PACKET_TYPE_STOP_JOINT,
+    ATLAS_JOINT_PACKET_TYPE_DATA_JOINT,
 } atlas_joint_packet_type_t;
 
-typedef struct {
-} atlas_joint_packet_payload_start_t;
-typedef struct {
-} atlas_joint_packet_payload_stop_t;
-typedef struct {
-    float32_t position;
-} atlas_joint_packet_payload_data_t;
+typedef int atlas_joint_packet_payload_start_joint_t;
+typedef int atlas_joint_packet_payload_stop_joint_t;
+typedef atlas_joint_data_t atlas_joint_packet_payload_data_joint_t;
 
 typedef union {
-    atlas_joint_packet_payload_start_t start;
-    atlas_joint_packet_payload_stop_t stop;
-    atlas_joint_packet_payload_data_t data;
+    atlas_joint_packet_payload_start_joint_t start_joint;
+    atlas_joint_packet_payload_stop_joint_t stop_joint;
+    atlas_joint_packet_payload_data_joint_t data_joint;
 } atlas_joint_packet_payload_t;
 
 typedef struct {
