@@ -36,19 +36,19 @@ typedef struct {
 } atlas_robot_packet_t;
 
 typedef enum {
-    ATLAS_JOINT_PACKET_TYPE_START_JOINT,
-    ATLAS_JOINT_PACKET_TYPE_STOP_JOINT,
-    ATLAS_JOINT_PACKET_TYPE_ROBOT_DATA,
+    ATLAS_JOINT_PACKET_TYPE_JOINT_START,
+    ATLAS_JOINT_PACKET_TYPE_JOINT_STOP,
+    ATLAS_JOINT_PACKET_TYPE_JOINT_DATA,
 } atlas_joint_packet_type_t;
 
-typedef int atlas_joint_packet_payload_start_joint_t;
-typedef int atlas_joint_packet_payload_stop_joint_t;
-typedef atlas_joint_data_t atlas_joint_packet_payload_robot_data_t;
+typedef atlas_joint_start_t atlas_joint_packet_payload_joint_start_t;
+typedef atlas_joint_stop_t atlas_joint_packet_payload_joint_stop_t;
+typedef atlas_joint_data_t atlas_joint_packet_payload_joint_data_t;
 
 typedef union {
-    atlas_joint_packet_payload_start_joint_t start_joint;
-    atlas_joint_packet_payload_stop_joint_t stop_joint;
-    atlas_joint_packet_payload_robot_data_t robot_data;
+    atlas_joint_packet_payload_joint_start_t joint_start;
+    atlas_joint_packet_payload_joint_stop_t joint_stop;
+    atlas_joint_packet_payload_joint_data_t joint_data;
 } atlas_joint_packet_payload_t;
 
 typedef struct {

@@ -25,8 +25,9 @@ void atlas_log(char const* format, ...)
 
     if (log_len > log_buf_len) {
         log_buf = malloc(log_len);
-        if (!log_buf)
+        if (!log_buf) {
             return;
+        }
         log_buf_len = log_len;
         use_heap_buf = true;
     }
