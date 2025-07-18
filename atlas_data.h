@@ -34,6 +34,21 @@ typedef struct {
     vec3_float32_t orientation;
 } atlas_cartesian_data_t;
 
+typedef enum {
+    ATLAS_ROBOT_DATA_TYPE_JOINTS,
+    ATLAS_ROBOT_DATA_TYPE_CARTESIAN,
+} atlas_robot_data_type_t;
+
+typedef union {
+    atlas_joints_data_t joints_data;
+    atlas_cartesian_data_t cartesian_data;
+} atlas_robot_data_payload_t;
+
+typedef struct {
+    atlas_robot_data_type_t type;
+    atlas_robot_data_payload_t payload;
+} atlas_robot_data_t;
+
 bool atlas_cartesian_data_is_equal(atlas_cartesian_data_t const* data1,
                                    atlas_cartesian_data_t const* data2);
 bool atlas_joints_data_is_equal(atlas_joints_data_t const* data1, atlas_joints_data_t const* data2);

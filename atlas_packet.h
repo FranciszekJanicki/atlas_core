@@ -38,17 +38,17 @@ typedef struct {
 typedef enum {
     ATLAS_JOINT_PACKET_TYPE_START_JOINT,
     ATLAS_JOINT_PACKET_TYPE_STOP_JOINT,
-    ATLAS_JOINT_PACKET_TYPE_DATA_JOINT,
+    ATLAS_JOINT_PACKET_TYPE_ROBOT_DATA,
 } atlas_joint_packet_type_t;
 
 typedef int atlas_joint_packet_payload_start_joint_t;
 typedef int atlas_joint_packet_payload_stop_joint_t;
-typedef atlas_joint_data_t atlas_joint_packet_payload_data_joint_t;
+typedef atlas_joint_data_t atlas_joint_packet_payload_robot_data_t;
 
 typedef union {
     atlas_joint_packet_payload_start_joint_t start_joint;
     atlas_joint_packet_payload_stop_joint_t stop_joint;
-    atlas_joint_packet_payload_data_joint_t data_joint;
+    atlas_joint_packet_payload_robot_data_t robot_data;
 } atlas_joint_packet_payload_t;
 
 typedef struct {
