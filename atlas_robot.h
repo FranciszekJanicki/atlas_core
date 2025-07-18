@@ -6,6 +6,7 @@
 typedef enum {
     ATLAS_ROBOT_DATA_TYPE_JOINTS,
     ATLAS_ROBOT_DATA_TYPE_CARTESIAN,
+    ATLAS_ROBOT_DATA_TYPE_NONE,
 } atlas_robot_data_type_t;
 
 typedef atlas_joints_data_t atlas_robot_data_payload_joints_t;
@@ -24,6 +25,7 @@ typedef struct {
 typedef enum {
     ATLAS_ROBOT_PATH_TYPE_JOINTS,
     ATLAS_ROBOT_PATH_TYPE_CARTESIAN,
+    ATLAS_ROBOT_PATH_TYPE_NONE,
 } atlas_robot_path_type_t;
 
 typedef atlas_joints_path_t atlas_robot_path_payload_joints_t;
