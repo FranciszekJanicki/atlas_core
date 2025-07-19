@@ -19,7 +19,8 @@ typedef struct {
 
 bool atlas_cartesian_path_is_equal(atlas_cartesian_path_t const* path1,
                                    atlas_cartesian_path_t const* path2);
-bool atlas_joints_path_is_equal(atlas_joints_path_t const* path1, atlas_joints_path_t const* path2);
+bool atlas_joints_path_is_equal(atlas_joints_path_t const* path1,
+                                atlas_joints_path_t const* path2);
 
 void atlas_cartesian_path_print(atlas_cartesian_path_t const* path);
 void atlas_joints_path_print(atlas_joints_path_t const* path);

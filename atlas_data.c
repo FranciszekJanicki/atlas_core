@@ -8,13 +8,16 @@ bool atlas_cartesian_data_is_equal(atlas_cartesian_data_t const* data1,
 {
     ATLAS_ASSERT(data1 && data2);
 
-    return data1->position.x == data2->position.x && data1->position.y == data2->position.y &&
-           data1->position.z == data2->position.z && data1->orientation.x == data2->orientation.x &&
+    return data1->position.x == data2->position.x &&
+           data1->position.y == data2->position.y &&
+           data1->position.z == data2->position.z &&
+           data1->orientation.x == data2->orientation.x &&
            data1->orientation.y == data2->orientation.y &&
            data1->orientation.z == data2->orientation.z;
 }
 
-bool atlas_joints_data_is_equal(atlas_joints_data_t const* data1, atlas_joints_data_t const* data2)
+bool atlas_joints_data_is_equal(atlas_joints_data_t const* data1,
+                                atlas_joints_data_t const* data2)
 {
     ATLAS_ASSERT(data1 && data2);
 
@@ -31,13 +34,14 @@ void atlas_cartesian_data_print(atlas_cartesian_data_t const* data)
 {
     ATLAS_ASSERT(data);
 
-    atlas_log("position x: %d, y: %d, z: %d orientation x: %d, y: %d, z: %d\n\r",
-              (int32_t)data->position.x * 100,
-              (int32_t)data->position.y * 100,
-              (int32_t)data->position.z * 100,
-              (int32_t)data->orientation.x * 100,
-              (int32_t)data->orientation.y * 100,
-              (int32_t)data->orientation.z * 100);
+    atlas_log(
+        "position x: %d, y: %d, z: %d orientation x: %d, y: %d, z: %d\n\r",
+        (int32_t)data->position.x * 100,
+        (int32_t)data->position.y * 100,
+        (int32_t)data->position.z * 100,
+        (int32_t)data->orientation.x * 100,
+        (int32_t)data->orientation.y * 100,
+        (int32_t)data->orientation.z * 100);
 }
 
 void atlas_joints_data_print(atlas_joints_data_t const* data)

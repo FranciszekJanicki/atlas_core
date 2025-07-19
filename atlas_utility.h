@@ -27,7 +27,8 @@
 
 #ifdef DEBUG
 
-#define ATLAS_LOG(TAG, FMT, ...) atlas_log("[%s] " FMT "\n\r", TAG, ##__VA_ARGS__)
+#define ATLAS_LOG(TAG, FMT, ...) \
+    atlas_log("[%s] " FMT "\n\r", TAG, ##__VA_ARGS__)
 
 #define ATLAS_LOG_FUNC(TAG) ATLAS_LOG(TAG, "%s", __func__)
 
@@ -39,13 +40,17 @@
         }                                                   \
     } while (0)
 
-#define ATLAS_ASSERT(EXPR)                                                                        \
-    do {                                                                                          \
-        if (!(EXPR)) {                                                                            \
-            ATLAS_LOG("ATLAS_ASSERT", "%s: %d: Assertion failed: %s", __FILE__, __LINE__, #EXPR); \
-            vTaskDelay(100);                                                                      \
-            ATLAS_PANIC();                                                                        \
-        }                                                                                         \
+#define ATLAS_ASSERT(EXPR)                            \
+    do {                                              \
+        if (!(EXPR)) {                                \
+            ATLAS_LOG("ATLAS_ASSERT",                 \
+                      "%s: %d: Assertion failed: %s", \
+                      __FILE__,                       \
+                      __LINE__,                       \
+                      #EXPR);                         \
+            vTaskDelay(100);                          \
+            ATLAS_PANIC();                            \
+        }                                             \
     } while (0)
 
 #define ATLAS_ERR_CHECK(ERR) ATLAS_ASSERT((ERR) == ATLAS_ERR_OK)

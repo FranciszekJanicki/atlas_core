@@ -10,30 +10,35 @@ typedef enum {
     ATLAS_ROBOT_PACKET_TYPE_JOINT_DATA,
 } atlas_robot_packet_type_t;
 
-typedef enum {
-    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_1 = ATLAS_JOINT_NUM_1,
-    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_2 = ATLAS_JOINT_NUM_2,
-    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_3 = ATLAS_JOINT_NUM_3,
-    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_4 = ATLAS_JOINT_NUM_4,
-    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_5 = ATLAS_JOINT_NUM_5,
-    ATLAS_ROBOT_PACKET_ORIGIN_JOINT_6 = ATLAS_JOINT_NUM_6,
-} atlas_robot_packet_origin_t;
+typedef atlas_joint_num_t atlas_robot_packet_origin_t;
 
 typedef atlas_joint_ready_t atlas_robot_packet_payload_joint_ready_t;
 typedef atlas_joint_fault_t atlas_robot_packet_payload_joint_fault_t;
 typedef atlas_joint_data_t atlas_robot_packet_payload_joint_data_t;
 
 typedef union {
-    atlas_robot_packet_payload_joint_ready_t joint_ready;
-    atlas_robot_packet_payload_joint_fault_t joint_fault;
     atlas_robot_packet_payload_joint_data_t joint_data;
+    atlas_robot_packet_payload_joint_fault_t joint_fault;
+    atlas_robot_packet_payload_joint_ready_t joint_ready;
 } atlas_robot_packet_payload_t;
 
 typedef struct {
+    uint32_t timestamp;
     atlas_robot_packet_type_t type;
     atlas_robot_packet_origin_t origin;
     atlas_robot_packet_payload_t payload;
 } atlas_robot_packet_t;
+
+#define ROBOT_PACKET_SIZE                                   \
+    (sizeof(uint32_t) + sizeof(atlas_robot_packet_type_t) + \
+     sizeof(atlas_robot_packet_origin_t) +                  \
+     sizeof(atlas_robot_packet_payload_t))
+
+void atlas_robot_packet_encode(atlas_robot_packet_t const* packet,
+                               uint8_t (*buffer)[ROBOT_PACKET_SIZE]);
+
+void atlas_robot_packet_decode(const uint8_t (*buffer)[ROBOT_PACKET_SIZE],
+                               atlas_robot_packet_t* packet);
 
 typedef enum {
     ATLAS_JOINT_PACKET_TYPE_JOINT_START,
@@ -51,9 +56,22 @@ typedef union {
     atlas_joint_packet_payload_joint_data_t joint_data;
 } atlas_joint_packet_payload_t;
 
+#define JOINT_PACKET_PAYLOAD_SIZE (sizeof(atlas_joint_packet_payload_t))
+
 typedef struct {
+    uint32_t timestamp;
     atlas_joint_packet_type_t type;
     atlas_joint_packet_payload_t payload;
 } atlas_joint_packet_t;
+
+#define JOINT_PACKET_SIZE                                   \
+    (sizeof(uint32_t) + sizeof(atlas_joint_packet_type_t) + \
+     sizeof(atlas_joint_packet_payload_t))
+
+void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
+                               uint8_t (*buffer)[JOINT_PACKET_SIZE]);
+
+void atlas_joint_packet_decode(const uint8_t (*buffer)[JOINT_PACKET_SIZE],
+                               atlas_joint_packet_t* packet);
 
 #endif // ATLAS_CORE_ATLAS_PACKET_H

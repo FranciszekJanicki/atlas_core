@@ -8,7 +8,8 @@ bool atlas_cartesian_path_is_equal(atlas_cartesian_path_t const* path1,
     ATLAS_ASSERT(path1 && path2);
 
     for (uint8_t num = 0U; num < ATLAS_CARTESIAN_PATH_MAX_POINTS; ++num) {
-        if (!atlas_cartesian_data_is_equal(&path1->points[num], &path2->points[num])) {
+        if (!atlas_cartesian_data_is_equal(&path1->points[num],
+                                           &path2->points[num])) {
             return false;
         }
     }
@@ -16,12 +17,14 @@ bool atlas_cartesian_path_is_equal(atlas_cartesian_path_t const* path1,
     return true;
 }
 
-bool atlas_joints_path_is_equal(atlas_joints_path_t const* path1, atlas_joints_path_t const* path2)
+bool atlas_joints_path_is_equal(atlas_joints_path_t const* path1,
+                                atlas_joints_path_t const* path2)
 {
     ATLAS_ASSERT(path1 && path2);
 
     for (uint8_t num = 0U; num < ATLAS_JOINTS_PATH_MAX_POINTS; ++num) {
-        if (!atlas_joints_data_is_equal(&path1->points[num], &path2->points[num])) {
+        if (!atlas_joints_data_is_equal(&path1->points[num],
+                                        &path2->points[num])) {
             return false;
         }
     }
