@@ -14,6 +14,7 @@ target_include_directories(atlas_core PUBLIC
 
 target_link_libraries(atlas_core PUBLIC
     stm32cubemx
+    utility
 )
 
 target_compile_options(atlas_core PUBLIC

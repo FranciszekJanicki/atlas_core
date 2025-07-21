@@ -22,6 +22,8 @@ typedef union {
     atlas_robot_packet_payload_joint_ready_t joint_ready;
 } atlas_robot_packet_payload_t;
 
+#define ROBOT_PACKET_PAYLOAD_SIZE (sizeof(atlas_robot_packet_payload_t))
+
 typedef struct {
     uint32_t timestamp;
     atlas_robot_packet_type_t type;
