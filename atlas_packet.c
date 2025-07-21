@@ -144,29 +144,77 @@ void atlas_robot_packet_decode(const uint8_t (*buffer)[ROBOT_PACKET_SIZE],
                                       &packet->payload);
 }
 
+static inline void atlas_joint_packet_type_encode(
+    atlas_joint_packet_type_t type,
+    uint8_t* buffer)
+{
+    uint8x4_t type_buffer = uint32_to_uint8x4_be(type);
+
+    buffer[0] = type_buffer.data[0];
+    buffer[1] = type_buffer.data[1];
+    buffer[2] = type_buffer.data[2];
+    buffer[3] = type_buffer.data[3];
+}
+
+static inline void atlas_joint_packet_type_decode(
+    uint8_t const* buffer,
+    atlas_joint_packet_type_t* type)
+{
+    uint8x4_t type_buffer;
+    type_buffer.data[0] = buffer[0];
+    type_buffer.data[1] = buffer[1];
+    type_buffer.data[2] = buffer[2];
+    type_buffer.data[3] = buffer[3];
+
+    *type = uint8x4_be_to_uint32(type_buffer);
+}
+
+static inline void atlas_joint_packet_payload_encode(
+    atlas_joint_packet_type_t type,
+    atlas_joint_packet_payload_t const* payload,
+    uint8_t* buffer)
+{
+    if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_DATA) {
+        uint8x4_t position_buffer =
+            float32_to_uint8x4_be(payload->joint_data.position);
+
+        buffer[0] = position_buffer.data[0];
+        buffer[1] = position_buffer.data[1];
+        buffer[2] = position_buffer.data[2];
+        buffer[3] = position_buffer.data[3];
+    } else if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_START) {
+    } else if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_STOP) {
+    }
+}
+
+static inline void atlas_joint_packet_payload_decode(
+    uint8_t const* buffer,
+    atlas_joint_packet_type_t type,
+    atlas_joint_packet_payload_t* payload)
+{
+    if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_DATA) {
+        uint8x4_t position_buffer;
+        position_buffer.data[0] = buffer[0];
+        position_buffer.data[1] = buffer[1];
+        position_buffer.data[2] = buffer[2];
+        position_buffer.data[3] = buffer[3];
+
+        payload->joint_data.position = uint8x4_be_to_float32(position_buffer);
+    } else if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_START) {
+    } else if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_STOP) {
+    }
+}
+
 void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
                                uint8_t (*buffer)[JOINT_PACKET_SIZE])
 {
     ATLAS_ASSERT(packet && buffer);
 
     atlas_timestamp_encode(&packet->timestamp, *buffer);
-
-    uint8x4_t type = uint32_to_uint8x4_be(packet->type);
-    *buffer[3] = type.data[0];
-    *buffer[4] = type.data[1];
-    *buffer[5] = type.data[2];
-    *buffer[6] = type.data[3];
-
-    if (packet->type == ATLAS_JOINT_PACKET_TYPE_JOINT_DATA) {
-        uint8x4_t position = uint32_to_uint8x4_be(
-            float32_to_uint32(packet->payload.joint_data.position));
-        *buffer[7] = position.data[0];
-        *buffer[8] = position.data[1];
-        *buffer[9] = position.data[2];
-        *buffer[10] = position.data[3];
-    } else if (packet->type == ATLAS_JOINT_PACKET_TYPE_JOINT_START) {
-    } else if (packet->type == ATLAS_JOINT_PACKET_TYPE_JOINT_STOP) {
-    }
+    atlas_joint_packet_type_encode(packet->type, *buffer + 3);
+    atlas_joint_packet_payload_encode(packet->type,
+                                      &packet->payload,
+                                      *buffer + 7);
 }
 
 void atlas_joint_packet_decode(const uint8_t (*buffer)[JOINT_PACKET_SIZE],
@@ -174,24 +222,9 @@ void atlas_joint_packet_decode(const uint8_t (*buffer)[JOINT_PACKET_SIZE],
 {
     ATLAS_ASSERT(buffer && packet);
 
-    packet->timestamp.hours = *buffer[0];
-    packet->timestamp.minutes = *buffer[1];
-    packet->timestamp.seconds = *buffer[2];
-
-    uint8x4_t type = {.data[0] = *buffer[3],
-                      .data[1] = *buffer[4],
-                      .data[2] = *buffer[5],
-                      .data[3] = *buffer[6]};
-    packet->type = uint8x4_be_to_uint32(type);
-
-    if (packet->type == ATLAS_JOINT_PACKET_TYPE_JOINT_DATA) {
-        uint8x4_t position = {.data = {[0] = *buffer[7],
-                                       [1] = *buffer[8],
-                                       [2] = *buffer[9],
-                                       [3] = *buffer[10]}};
-        packet->payload.joint_data.position =
-            uint32_to_float32(uint8x4_be_to_uint32(position));
-    } else if (packet->type == ATLAS_JOINT_PACKET_TYPE_JOINT_START) {
-    } else if (packet->type == ATLAS_JOINT_PACKET_TYPE_JOINT_STOP) {
-    }
+    atlas_timestamp_decode(*buffer, &packet->timestamp);
+    atlas_joint_packet_type_decode(*buffer + 3, &packet->type);
+    atlas_joint_packet_payload_decode(*buffer + 7,
+                                      packet->type,
+                                      &packet->payload);
 }

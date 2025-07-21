@@ -37,12 +37,6 @@ typedef struct {
      sizeof(atlas_robot_packet_origin_t) +                  \
      sizeof(atlas_robot_packet_payload_t))
 
-void atlas_robot_packet_encode(atlas_robot_packet_t const* packet,
-                               uint8_t (*buffer)[ROBOT_PACKET_SIZE]);
-
-void atlas_robot_packet_decode(const uint8_t (*buffer)[ROBOT_PACKET_SIZE],
-                               atlas_robot_packet_t* packet);
-
 typedef enum {
     ATLAS_JOINT_PACKET_TYPE_JOINT_START,
     ATLAS_JOINT_PACKET_TYPE_JOINT_STOP,
@@ -71,9 +65,13 @@ typedef struct {
     (sizeof(uint32_t) + sizeof(atlas_joint_packet_type_t) + \
      sizeof(atlas_joint_packet_payload_t))
 
+void atlas_robot_packet_encode(atlas_robot_packet_t const* packet,
+                               uint8_t (*buffer)[ROBOT_PACKET_SIZE]);
+void atlas_robot_packet_decode(const uint8_t (*buffer)[ROBOT_PACKET_SIZE],
+                               atlas_robot_packet_t* packet);
+
 void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
                                uint8_t (*buffer)[JOINT_PACKET_SIZE]);
-
 void atlas_joint_packet_decode(const uint8_t (*buffer)[JOINT_PACKET_SIZE],
                                atlas_joint_packet_t* packet);
 
