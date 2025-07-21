@@ -3,6 +3,7 @@
 
 #include "atlas_data.h"
 #include "atlas_path.h"
+#include "atlas_timestamp.h"
 
 typedef enum {
     ATLAS_ROBOT_PACKET_TYPE_JOINT_READY,
@@ -25,7 +26,7 @@ typedef union {
 #define ROBOT_PACKET_PAYLOAD_SIZE (sizeof(atlas_robot_packet_payload_t))
 
 typedef struct {
-    uint32_t timestamp;
+    atlas_timestamp_t timestamp;
     atlas_robot_packet_type_t type;
     atlas_robot_packet_origin_t origin;
     atlas_robot_packet_payload_t payload;
@@ -61,7 +62,7 @@ typedef union {
 #define JOINT_PACKET_PAYLOAD_SIZE (sizeof(atlas_joint_packet_payload_t))
 
 typedef struct {
-    uint32_t timestamp;
+    atlas_timestamp_t timestamp;
     atlas_joint_packet_type_t type;
     atlas_joint_packet_payload_t payload;
 } atlas_joint_packet_t;

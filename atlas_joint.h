@@ -23,14 +23,15 @@ typedef struct {
 typedef struct {
 } atlas_joint_stop_t;
 
-typedef struct {
+typedef enum {
+    ATLAS_JOINT_FAULT_ENCODER,
+    ATLAS_JOINT_FAULT_DRIVER,
+    ATLAS_JOINT_FAULT_CURRENT,
+    ATLAS_JOINT_FAULT_NONE,
 } atlas_joint_fault_t;
 
 typedef struct {
 } atlas_joint_ready_t;
-
-typedef struct {
-} atlas_joint_status_t;
 
 typedef enum {
     ATLAS_JOINT_STATE_IDLE,

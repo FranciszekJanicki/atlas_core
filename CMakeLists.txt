@@ -6,6 +6,7 @@ target_sources(atlas_core PRIVATE
     atlas_data.c
     atlas_path.c
     atlas_packet.c
+    atlas_timestamp.c
 )
 
 target_include_directories(atlas_core PUBLIC
