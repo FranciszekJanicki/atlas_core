@@ -10,6 +10,8 @@ typedef struct {
     uint8_t seconds;
 } atlas_timestamp_t;
 
+void atlas_timestamp_print(atlas_timestamp_t const* timestamp);
+
 bool atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
                                char** data,
                                size_t* data_size,

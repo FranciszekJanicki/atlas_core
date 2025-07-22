@@ -3,6 +3,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void atlas_timestamp_print(atlas_timestamp_t const* timestamp)
+{
+    char* string;
+    size_t string_len;
+    bool used_malloc;
+
+    atlas_timestamp_to_string(timestamp, &string, &string_len, &used_malloc);
+    atlas_log("%s\n\r", string);
+
+    if (used_malloc) {
+        free(string);
+    }
+}
+
 bool atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
                                char** string,
                                size_t* string_len,

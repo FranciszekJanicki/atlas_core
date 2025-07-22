@@ -1,7 +1,9 @@
 #include "atlas_log.h"
 #include "FreeRTOS.h"
+#include "allocator.h"
 #include "stream_buffer.h"
 #include "usart.h"
+#include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,34 +13,25 @@ extern int _write(int file, char* ptr, int len);
 
 void atlas_log(char const* format, ...)
 {
-    static char buffer[300];
-
-    char* log_buf = buffer;
-    size_t log_buf_len = sizeof(buffer);
-    bool use_heap_buf = false;
-
     va_list args;
 
     va_start(args, format);
-    size_t log_len = vsnprintf(NULL, 0, format, args) + 1UL;
+    size_t buffer_len = vsnprintf(NULL, 0UL, format, args) + 1UL;
     va_end(args);
 
-    if (log_len > log_buf_len) {
-        log_buf = malloc(log_len);
-        if (!log_buf) {
-            return;
-        }
-        log_buf_len = log_len;
-        use_heap_buf = true;
+    allocator_t allocator;
+    char* buffer = allocator_new(&allocator, buffer_len);
+    if (!buffer) {
+        return;
     }
 
     va_start(args, format);
-    vsnprintf(log_buf, log_buf_len, format, args);
+    size_t written_len = vsnprintf(buffer, buffer_len, format, args);
     va_end(args);
 
-    _write(0, log_buf, strlen(log_buf));
-
-    if (use_heap_buf) {
-        free(log_buf);
+    if (written_len == buffer_len - 1UL) {
+        _write(0, buffer, strlen(buffer));
     }
+
+    allocator_delete(&allocator);
 }

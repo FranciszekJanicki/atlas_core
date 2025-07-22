@@ -1,7 +1,7 @@
 #include "atlas_packet.h"
 #include "atlas_utility.h"
+#include "bits.h"
 #include "string.h"
-#include "utility.h"
 
 // properly encode / decode array of uint8_t into packet struct
 // and vice-versa. It is correct even if the layout of these types
