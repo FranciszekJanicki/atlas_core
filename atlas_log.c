@@ -13,15 +13,16 @@ extern int _write(int file, char* ptr, int len);
 
 void atlas_log(char const* format, ...)
 {
+    static char buffer[1000];
+
     va_list args;
 
     va_start(args, format);
     size_t buffer_len = vsnprintf(NULL, 0UL, format, args) + 1UL;
     va_end(args);
 
-    allocator_t allocator;
-    char* buffer = allocator_new(&allocator, buffer_len);
-    if (!buffer) {
+    if (buffer_len > sizeof(buffer)) {
+        // should do heap allocation there, but fuck this shit
         return;
     }
 
@@ -32,6 +33,4 @@ void atlas_log(char const* format, ...)
     if (written_len == buffer_len - 1UL) {
         _write(0, buffer, strlen(buffer));
     }
-
-    allocator_delete(&allocator);
 }
