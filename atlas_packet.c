@@ -1,6 +1,6 @@
 #include "atlas_packet.h"
 #include "atlas_utility.h"
-#include "bits.h"
+#include "bitwise.h"
 #include "string.h"
 
 // properly encode / decode array of uint8_t into packet struct
