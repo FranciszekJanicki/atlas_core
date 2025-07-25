@@ -1,11 +1,10 @@
 #ifndef ATLAS_CORE_ATLAS_PACKET_H
 #define ATLAS_CORE_ATLAS_PACKET_H
 
+#include "atlas_checksum.h"
 #include "atlas_joint.h"
 #include "atlas_robot.h"
 #include "atlas_timestamp.h"
-
-typedef uint32_t atlas_checksum_t;
 
 typedef enum {
     ATLAS_ROBOT_PACKET_TYPE_JOINT_READY,
