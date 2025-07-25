@@ -5,16 +5,19 @@
 #include <stdint.h>
 
 typedef struct {
-    uint8_t hours;
-    uint8_t minutes;
-    uint8_t seconds;
+    uint8_t hour;
+    uint8_t minute;
+    uint8_t second;
+    uint8_t day;
+    uint8_t month;
+    uint8_t year;
 } atlas_timestamp_t;
 
 void atlas_timestamp_print(atlas_timestamp_t const* timestamp);
 
 bool atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
-                               char** data,
-                               size_t* data_size,
-                               bool* used_malloc);
+                               char** string,
+                               size_t* string_size,
+                               bool* is_heap_string);
 
 #endif // ATLAS_CORE_ATLAS_TIMESTAMP_H

@@ -3,61 +3,85 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static char const* const timestamp_format = "%u-%u-%u %u:%u:%u";
+
 void atlas_timestamp_print(atlas_timestamp_t const* timestamp)
 {
     ATLAS_ASSERT(timestamp != NULL);
 
-    atlas_log("timestamp: %u:%u:%u\n\r",
-              timestamp->hours,
-              timestamp->minutes,
-              timestamp->seconds);
+    atlas_log("timestamp: %timestamp_format [DD-MM-YYYY HH:MM:SS]\n\r",
+              timestamp->day,
+              timestamp->month,
+              timestamp->year,
+              timestamp->hour,
+              timestamp->minute,
+              timestamp->second);
 }
 
 bool atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
                                char** string,
-                               size_t* string_len,
-                               bool* used_malloc)
+                               size_t* string_size,
+                               bool* is_heap_string)
 {
     ATLAS_ASSERT(timestamp != NULL);
     ATLAS_ASSERT(string != NULL);
-    ATLAS_ASSERT(string_len != NULL);
-    ATLAS_ASSERT(used_malloc != NULL);
+    ATLAS_ASSERT(string_size != NULL);
+    ATLAS_ASSERT(is_heap_string != NULL);
 
-    if (timestamp->hours >= 24U || timestamp->minutes >= 60U ||
-        timestamp->seconds >= 60U) {
+    if (timestamp->hour >= 24U || timestamp->minute >= 60U ||
+        timestamp->second >= 60U) {
         return false;
     }
 
-    static char buffer[100];
+    size_t needed_size = snprintf(NULL,
+                                  0UL,
+                                  "%timestamp_format",
+                                  timestamp->day,
+                                  timestamp->month,
+                                  timestamp->year,
+                                  timestamp->hour,
+                                  timestamp->minute,
+                                  timestamp->second) +
+                         1UL;
 
-    size_t needed_len = snprintf(NULL,
-                                 0UL,
-                                 "%u:%u:%u",
-                                 timestamp->hours,
-                                 timestamp->minutes,
-                                 timestamp->seconds) +
-                        1UL;
+    char* buffer;
+    size_t buffer_size;
+    bool used_heap_buffer;
 
-    if (needed_len < sizeof(buffer)) {
-        *string = buffer;
-        *string_len = sizeof(buffer);
-        *used_malloc = false;
+    if (needed_size <= 100UL) {
+        static char static_buffer[100UL];
+
+        buffer = static_buffer;
+        buffer_size = sizeof(static_buffer);
+        used_heap_buffer = false;
     } else {
-        *string = calloc(sizeof(char), needed_len);
-        *string_len = needed_len;
-        *used_malloc = true;
+        char* heap_buffer = pvPortMalloc(needed_size);
+        if (heap_buffer == NULL) {
+            return false;
+        }
+
+        buffer = heap_buffer;
+        buffer_size = needed_size;
+        used_heap_buffer = true;
     }
 
-    if (*string == NULL) {
+    size_t written_size = snprintf(buffer,
+                                   buffer_size,
+                                   "%timestamp_format",
+                                   timestamp->day,
+                                   timestamp->month,
+                                   timestamp->year,
+                                   timestamp->hour,
+                                   timestamp->minute,
+                                   timestamp->second);
+
+    if (written_size != needed_size - 1UL) {
         return false;
     }
 
-    size_t written_len = snprintf(*string,
-                                  *string_len,
-                                  "%u:%u:%u",
-                                  timestamp->hours,
-                                  timestamp->minutes,
-                                  timestamp->seconds);
+    *string = buffer;
+    *string_size = buffer_size;
+    *is_heap_string = used_heap_buffer;
 
-    return written_len == needed_len - 1UL;
+    return true;
 }
