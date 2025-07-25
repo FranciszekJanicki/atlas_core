@@ -19,17 +19,23 @@
 static inline void atlas_timestamp_encode(atlas_timestamp_t const* timestamp,
                                           uint8_t* buffer)
 {
-    buffer[0] = timestamp->hours;
-    buffer[1] = timestamp->minutes;
-    buffer[2] = timestamp->seconds;
+    buffer[0] = timestamp->year;
+    buffer[1] = timestamp->month;
+    buffer[2] = timestamp->day;
+    buffer[3] = timestamp->hour;
+    buffer[4] = timestamp->minute;
+    buffer[5] = timestamp->second;
 }
 
 static inline void atlas_timestamp_decode(uint8_t const* buffer,
                                           atlas_timestamp_t* timestamp)
 {
-    timestamp->hours = buffer[0];
-    timestamp->minutes = buffer[1];
-    timestamp->seconds = buffer[2];
+    timestamp->year = buffer[0];
+    timestamp->month = buffer[1];
+    timestamp->day = buffer[2];
+    timestamp->hour = buffer[3];
+    timestamp->minute = buffer[4];
+    timestamp->second = buffer[5];
 }
 
 static inline void atlas_robot_packet_type_encode(
@@ -87,14 +93,22 @@ static inline void atlas_robot_packet_payload_encode(
     atlas_robot_packet_payload_t const* payload,
     uint8_t* buffer)
 {
-    if (type == ATLAS_ROBOT_PACKET_TYPE_JOINT_DATA) {
+    if (type == ATLAS_ROBOT_PACKET_TYPE_JOINT_MEASURE) {
         uint8x4_t position_buffer =
-            float32_to_uint8x4_be(payload->joint_data.position);
+            float32_to_uint8x4_be(payload->joint_measure.position);
 
         buffer[0] = position_buffer.data[0];
         buffer[1] = position_buffer.data[1];
         buffer[2] = position_buffer.data[2];
         buffer[3] = position_buffer.data[3];
+
+        uint8x4_t current_buffer =
+            float32_to_uint8x4_be(payload->joint_measure.current);
+
+        buffer[0] = current_buffer.data[0];
+        buffer[1] = current_buffer.data[1];
+        buffer[2] = current_buffer.data[2];
+        buffer[3] = current_buffer.data[3];
     } else if (type == ATLAS_ROBOT_PACKET_TYPE_JOINT_FAULT) {
     } else if (type == ATLAS_ROBOT_PACKET_TYPE_JOINT_READY) {
     }
@@ -105,14 +119,23 @@ static inline void atlas_robot_packet_payload_decode(
     atlas_robot_packet_type_t type,
     atlas_robot_packet_payload_t* payload)
 {
-    if (type == ATLAS_ROBOT_PACKET_TYPE_JOINT_DATA) {
+    if (type == ATLAS_ROBOT_PACKET_TYPE_JOINT_MEASURE) {
         uint8x4_t position_buffer;
         position_buffer.data[0] = buffer[0];
         position_buffer.data[1] = buffer[1];
         position_buffer.data[2] = buffer[2];
         position_buffer.data[3] = buffer[3];
 
-        payload->joint_data.position = uint8x4_be_to_float32(position_buffer);
+        payload->joint_measure.position =
+            uint8x4_be_to_float32(position_buffer);
+
+        uint8x4_t current_buffer;
+        current_buffer.data[0] = buffer[0];
+        current_buffer.data[1] = buffer[1];
+        current_buffer.data[2] = buffer[2];
+        current_buffer.data[3] = buffer[3];
+
+        payload->joint_measure.current = uint8x4_be_to_float32(current_buffer);
     } else if (type == ATLAS_ROBOT_PACKET_TYPE_JOINT_FAULT) {
     } else if (type == ATLAS_ROBOT_PACKET_TYPE_JOINT_READY) {
     }
@@ -121,27 +144,39 @@ static inline void atlas_robot_packet_payload_decode(
 void atlas_robot_packet_encode(atlas_robot_packet_t const* packet,
                                uint8_t (*buffer)[ROBOT_PACKET_SIZE])
 {
-    ATLAS_ASSERT(packet && buffer);
+    ATLAS_ASSERT(packet != NULL);
+    ATLAS_ASSERT(buffer != NULL);
 
-    atlas_timestamp_encode(&packet->timestamp, *buffer);
-    atlas_robot_packet_type_encode(packet->type, *buffer + 3);
-    atlas_robot_packet_origin_encode(packet->origin, *buffer + 7);
-    atlas_robot_packet_payload_encode(packet->type,
-                                      &packet->payload,
-                                      *buffer + 11);
+    uint8_t* buf = *buffer;
+    atlas_timestamp_encode(&packet->timestamp, buf);
+
+    buf += sizeof(atlas_timestamp_t);
+    atlas_robot_packet_type_encode(packet->type, buf);
+
+    buf += sizeof(atlas_robot_packet_type_t);
+    atlas_robot_packet_origin_encode(packet->origin, buf);
+
+    buf += sizeof(atlas_robot_packet_origin_t);
+    atlas_robot_packet_payload_encode(packet->type, &packet->payload, buf);
 }
 
 void atlas_robot_packet_decode(const uint8_t (*buffer)[ROBOT_PACKET_SIZE],
                                atlas_robot_packet_t* packet)
 {
-    ATLAS_ASSERT(packet && buffer);
+    ATLAS_ASSERT(packet != NULL);
+    ATLAS_ASSERT(buffer != NULL);
 
-    atlas_timestamp_decode(*buffer, &packet->timestamp);
-    atlas_robot_packet_type_decode(*buffer + 3, &packet->type);
-    atlas_robot_packet_origin_decode(*buffer + 7, &packet->origin);
-    atlas_robot_packet_payload_decode(*buffer + 11,
-                                      packet->type,
-                                      &packet->payload);
+    uint8_t* buf = *buffer;
+    atlas_timestamp_decode(buf, &packet->timestamp);
+
+    buf += sizeof(atlas_timestamp_t);
+    atlas_robot_packet_type_decode(buf, &packet->type);
+
+    buf += sizeof(atlas_robot_packet_type_t);
+    atlas_robot_packet_origin_decode(buf, &packet->origin);
+
+    buf += sizeof(atlas_robot_packet_origin_t);
+    atlas_robot_packet_payload_decode(buf, packet->type, &packet->payload);
 }
 
 static inline void atlas_joint_packet_type_encode(
@@ -174,14 +209,22 @@ static inline void atlas_joint_packet_payload_encode(
     atlas_joint_packet_payload_t const* payload,
     uint8_t* buffer)
 {
-    if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_DATA) {
+    if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_REFERENCE) {
         uint8x4_t position_buffer =
-            float32_to_uint8x4_be(payload->joint_data.position);
+            float32_to_uint8x4_be(payload->joint_reference.position);
 
         buffer[0] = position_buffer.data[0];
         buffer[1] = position_buffer.data[1];
         buffer[2] = position_buffer.data[2];
         buffer[3] = position_buffer.data[3];
+
+        uint8x4_t delta_time_buffer =
+            float32_to_uint8x4_be(payload->joint_reference.delta_time);
+
+        buffer[4] = delta_time_buffer.data[0];
+        buffer[5] = delta_time_buffer.data[1];
+        buffer[6] = delta_time_buffer.data[2];
+        buffer[7] = delta_time_buffer.data[3];
     } else if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_START) {
     } else if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_STOP) {
     }
@@ -192,14 +235,24 @@ static inline void atlas_joint_packet_payload_decode(
     atlas_joint_packet_type_t type,
     atlas_joint_packet_payload_t* payload)
 {
-    if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_DATA) {
+    if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_REFERENCE) {
         uint8x4_t position_buffer;
         position_buffer.data[0] = buffer[0];
         position_buffer.data[1] = buffer[1];
         position_buffer.data[2] = buffer[2];
         position_buffer.data[3] = buffer[3];
 
-        payload->joint_data.position = uint8x4_be_to_float32(position_buffer);
+        payload->joint_reference.position =
+            uint8x4_be_to_float32(position_buffer);
+
+        uint8x4_t delta_time_buffer;
+        delta_time_buffer.data[0] = buffer[4];
+        delta_time_buffer.data[1] = buffer[5];
+        delta_time_buffer.data[2] = buffer[6];
+        delta_time_buffer.data[3] = buffer[7];
+
+        payload->joint_reference.delta_time =
+            uint8x4_be_to_float32(delta_time_buffer);
     } else if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_START) {
     } else if (type == ATLAS_JOINT_PACKET_TYPE_JOINT_STOP) {
     }
@@ -208,23 +261,31 @@ static inline void atlas_joint_packet_payload_decode(
 void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
                                uint8_t (*buffer)[JOINT_PACKET_SIZE])
 {
-    ATLAS_ASSERT(packet && buffer);
+    ATLAS_ASSERT(packet != NULL);
+    ATLAS_ASSERT(buffer != NULL);
 
-    atlas_timestamp_encode(&packet->timestamp, *buffer);
-    atlas_joint_packet_type_encode(packet->type, *buffer + 3);
-    atlas_joint_packet_payload_encode(packet->type,
-                                      &packet->payload,
-                                      *buffer + 7);
+    uint8_t* buf = *buffer;
+    atlas_timestamp_encode(&packet->timestamp, buf);
+
+    buf += sizeof(atlas_timestamp_t);
+    atlas_joint_packet_type_encode(packet->type, buf);
+
+    buf += sizeof(atlas_joint_packet_type_t);
+    atlas_joint_packet_payload_encode(packet->type, &packet->payload, buf);
 }
 
 void atlas_joint_packet_decode(const uint8_t (*buffer)[JOINT_PACKET_SIZE],
                                atlas_joint_packet_t* packet)
 {
-    ATLAS_ASSERT(buffer && packet);
+    ATLAS_ASSERT(packet != NULL);
+    ATLAS_ASSERT(buffer != NULL);
 
-    atlas_timestamp_decode(*buffer, &packet->timestamp);
-    atlas_joint_packet_type_decode(*buffer + 3, &packet->type);
-    atlas_joint_packet_payload_decode(*buffer + 7,
-                                      packet->type,
-                                      &packet->payload);
+    uint8_t* buf = *buffer;
+    atlas_timestamp_decode(buf, &packet->timestamp);
+
+    buf += sizeof(atlas_timestamp_t);
+    atlas_joint_packet_type_decode(buf, &packet->type);
+
+    buf += sizeof(atlas_joint_packet_type_t);
+    atlas_joint_packet_payload_decode(buf, packet->type, &packet->payload);
 }

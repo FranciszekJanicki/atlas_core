@@ -56,7 +56,7 @@ void atlas_log(char const* format, ...)
     _write(0, buffer, strlen(buffer));
 
     if (used_heap_buffer) {
-        vPortFree(used_heap_buffer);
+        vPortFree(buffer);
     }
 }
 

@@ -2,6 +2,7 @@
 #define ATLAS_CORE_ATLAS_ROBOT_H
 
 #include "atlas_data.h"
+#include "atlas_path.h"
 
 typedef enum {
     ATLAS_ROBOT_DATA_TYPE_JOINTS,

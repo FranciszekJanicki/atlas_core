@@ -13,9 +13,12 @@ typedef enum {
     ATLAS_JOINT_NUM,
 } atlas_joint_num_t;
 
-typedef struct {
-    float32_t position;
-} atlas_joint_data_t;
+typedef enum {
+    ATLAS_JOINT_STATE_IDLE,
+    ATLAS_JOINT_STATE_READY,
+    ATLAS_JOINT_STATE_RUNNING,
+    ATLAS_JOINT_STATE_FAULT,
+} atlas_joint_state_t;
 
 typedef struct {
 } atlas_joint_start_t;
@@ -23,21 +26,24 @@ typedef struct {
 typedef struct {
 } atlas_joint_stop_t;
 
-typedef enum {
-    ATLAS_JOINT_FAULT_ENCODER,
-    ATLAS_JOINT_FAULT_DRIVER,
-    ATLAS_JOINT_FAULT_CURRENT,
-    ATLAS_JOINT_FAULT_NONE,
-} atlas_joint_fault_t;
-
 typedef struct {
 } atlas_joint_ready_t;
 
-typedef enum {
-    ATLAS_JOINT_STATE_IDLE,
-    ATLAS_JOINT_STATE_STARTED,
-    ATLAS_JOINT_STATE_STOPPED,
-    ATLAS_JOINT_STATE_INVALID,
-} atlas_joint_state_t;
+typedef struct {
+} atlas_joint_fault_t;
+
+typedef struct {
+    float32_t position;
+} atlas_joint_data_t;
+
+typedef struct {
+    float32_t position;
+    float32_t current;
+} atlas_joint_measure_t;
+
+typedef struct {
+    float32_t position;
+    float32_t delta_time;
+} atlas_joint_reference_t;
 
 #endif // ATLAS_CORE_ATLAS_JOINT_H
