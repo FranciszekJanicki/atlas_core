@@ -85,3 +85,31 @@ bool atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
 
     return true;
 }
+
+void atlas_timestamp_encode(atlas_timestamp_t const* timestamp,
+                            uint8_t (*buffer)[ATLAS_TIMESTAMP_SIZE])
+{
+    ATLAS_ASSERT(buffer != NULL);
+    ATLAS_ASSERT(timestamp != NULL);
+
+    *buffer[0] = timestamp->year;
+    *buffer[1] = timestamp->month;
+    *buffer[2] = timestamp->day;
+    *buffer[3] = timestamp->hour;
+    *buffer[4] = timestamp->minute;
+    *buffer[5] = timestamp->second;
+}
+
+void atlas_timestamp_decode(const uint8_t (*buffer)[ATLAS_TIMESTAMP_SIZE],
+                            atlas_timestamp_t* timestamp)
+{
+    ATLAS_ASSERT(buffer != NULL);
+    ATLAS_ASSERT(timestamp != NULL);
+
+    timestamp->year = *buffer[0];
+    timestamp->month = *buffer[1];
+    timestamp->day = *buffer[2];
+    timestamp->hour = *buffer[3];
+    timestamp->minute = *buffer[4];
+    timestamp->second = *buffer[5];
+}

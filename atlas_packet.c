@@ -16,51 +16,6 @@
 // the case when sending reinterpreted / reinterpreting received
 // bytes between different devices
 
-static inline void atlas_timestamp_encode(atlas_timestamp_t const* timestamp,
-                                          uint8_t* buffer)
-{
-    buffer[0] = timestamp->year;
-    buffer[1] = timestamp->month;
-    buffer[2] = timestamp->day;
-    buffer[3] = timestamp->hour;
-    buffer[4] = timestamp->minute;
-    buffer[5] = timestamp->second;
-}
-
-static inline void atlas_timestamp_decode(uint8_t const* buffer,
-                                          atlas_timestamp_t* timestamp)
-{
-    timestamp->year = buffer[0];
-    timestamp->month = buffer[1];
-    timestamp->day = buffer[2];
-    timestamp->hour = buffer[3];
-    timestamp->minute = buffer[4];
-    timestamp->second = buffer[5];
-}
-
-static inline void atlas_checksum_encode(atlas_checksum_t checksum,
-                                         uint8_t* buffer)
-{
-    uint8x4_t checksum_buffer = uint32_to_uint8x4_be(checksum);
-
-    buffer[0] = checksum_buffer.data[0];
-    buffer[1] = checksum_buffer.data[1];
-    buffer[2] = checksum_buffer.data[2];
-    buffer[3] = checksum_buffer.data[3];
-}
-
-static inline void atlas_checksum_decode(uint8_t const* buffer,
-                                         atlas_checksum_t* checksum)
-{
-    uint8x4_t checksum_buffer;
-    checksum_buffer.data[0] = buffer[0];
-    checksum_buffer.data[1] = buffer[1];
-    checksum_buffer.data[2] = buffer[2];
-    checksum_buffer.data[3] = buffer[3];
-
-    *checksum = uint8x4_be_to_uint32(checksum_buffer);
-}
-
 static inline void atlas_robot_packet_type_encode(
     atlas_robot_packet_type_t type,
     uint8_t* buffer)
@@ -184,10 +139,12 @@ void atlas_robot_packet_encode(atlas_robot_packet_t const* packet,
 
     uint8_t* timestamp_buffer =
         payload_buffer + sizeof(atlas_robot_packet_payload_t);
-    atlas_timestamp_encode(&packet->timestamp, timestamp_buffer);
+    atlas_timestamp_encode(&packet->timestamp,
+                           (uint8_t (*)[ATLAS_TIMESTAMP_SIZE])timestamp_buffer);
 
     uint8_t* checksum_buffer = timestamp_buffer + sizeof(atlas_timestamp_t);
-    atlas_checksum_encode(packet->checksum, checksum_buffer);
+    atlas_checksum_encode(&packet->checksum,
+                          (uint8_t (*)[ATLAS_CHECKSUM_SIZE])checksum_buffer);
 }
 
 void atlas_robot_packet_decode(const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE],
@@ -210,10 +167,12 @@ void atlas_robot_packet_decode(const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE],
 
     uint8_t* timestamp_buffer =
         payload_buffer + sizeof(atlas_robot_packet_origin_t);
-    atlas_timestamp_decode(timestamp_buffer, &packet->timestamp);
+    atlas_timestamp_decode((uint8_t (*)[ATLAS_TIMESTAMP_SIZE])timestamp_buffer,
+                           &packet->timestamp);
 
     uint8_t* checksum_buffer = timestamp_buffer + sizeof(atlas_timestamp_t);
-    atlas_timestamp_decode(checksum_buffer, &packet->timestamp);
+    atlas_checksum_decode((uint8_t (*)[ATLAS_CHECKSUM_SIZE])checksum_buffer,
+                          &packet->checksum);
 }
 
 static inline void atlas_joint_packet_type_encode(
@@ -311,10 +270,12 @@ void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
 
     uint8_t* timestamp_buffer =
         payload_buffer + sizeof(atlas_joint_packet_payload_t);
-    atlas_timestamp_encode(&packet->timestamp, timestamp_buffer);
+    atlas_timestamp_encode(&packet->timestamp,
+                           (uint8_t (*)[ATLAS_TIMESTAMP_SIZE])timestamp_buffer);
 
     uint8_t* checksum_buffer = timestamp_buffer + sizeof(atlas_timestamp_t);
-    atlas_checksum_encode(packet->checksum, checksum_buffer);
+    atlas_checksum_encode(&packet->checksum,
+                          (uint8_t (*)[ATLAS_CHECKSUM_SIZE])checksum_buffer);
 }
 
 void atlas_joint_packet_decode(const uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE],
@@ -333,8 +294,10 @@ void atlas_joint_packet_decode(const uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE],
 
     uint8_t* timestamp_buffer =
         payload_buffer + sizeof(atlas_joint_packet_payload_t);
-    atlas_timestamp_decode(timestamp_buffer, &packet->timestamp);
+    atlas_timestamp_decode((uint8_t (*)[ATLAS_TIMESTAMP_SIZE])timestamp_buffer,
+                           &packet->timestamp);
 
     uint8_t* checksum_buffer = timestamp_buffer + sizeof(atlas_timestamp_t);
-    atlas_checksum_decode(checksum_buffer, &packet->checksum);
+    atlas_checksum_decode((uint8_t (*)[ATLAS_CHECKSUM_SIZE])checksum_buffer,
+                          &packet->checksum);
 }

@@ -4,7 +4,8 @@
 #include "atlas_utility.h"
 #include <stdint.h>
 
-static bool atlas_robot_joints_data_is_equal(
+static bool atlas_robot_
+_is_equal(
     atlas_robot_joints_data_t const* joints1,
     atlas_robot_joints_data_t const* joints2)
 {
