@@ -1,7 +1,6 @@
 #ifndef ATLAS_CORE_ATLAS_CORE_H
 #define ATLAS_CORE_ATLAS_CORE_H
 
-#include "atlas_crc.h"
 #include "atlas_err.h"
 #include "atlas_joint.h"
 #include "atlas_log.h"
