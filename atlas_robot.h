@@ -52,4 +52,14 @@ typedef enum {
     ATLAS_ROBOT_STATE_INVALID,
 } atlas_robot_state_t;
 
+bool atlas_robot_data_is_equal(atlas_robot_data_t const* data1,
+                               atlas_robot_data_t const* data2);
+
+void atlas_robot_data_print(atlas_robot_data_t const* data);
+
+bool atlas_robot_path_is_equal(atlas_robot_path_t const* path1,
+                               atlas_robot_path_t const* path2);
+
+void atlas_robot_path_print(atlas_robot_path_t const* path);
+
 #endif // ATLAS_CORE_ATLAS_ROBOT_H

@@ -46,4 +46,14 @@ typedef struct {
     float32_t delta_time;
 } atlas_joint_reference_t;
 
+bool atlas_joint_reference_is_equal(atlas_joint_reference_t const* reference1,
+                                    atlas_joint_reference_t const* reference2);
+
+void atlas_joint_reference_print(atlas_joint_reference_t const* reference);
+
+bool atlas_joint_measure_is_equal(atlas_joint_measure_t const* measure1,
+                                  atlas_joint_measure_t const* measure2);
+
+void atlas_joint_measure_print(atlas_joint_measure_t const* measure);
+
 #endif // ATLAS_CORE_ATLAS_JOINT_H
