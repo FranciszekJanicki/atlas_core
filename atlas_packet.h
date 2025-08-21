@@ -41,16 +41,19 @@ typedef struct {
 typedef enum {
     ATLAS_JOINT_PACKET_TYPE_JOINT_START,
     ATLAS_JOINT_PACKET_TYPE_JOINT_STOP,
+    ATLAS_JOINT_PACKET_TYPE_JOINT_RESET,
     ATLAS_JOINT_PACKET_TYPE_JOINT_REFERENCE,
 } atlas_joint_packet_type_t;
 
 typedef atlas_joint_start_t atlas_joint_packet_payload_joint_start_t;
 typedef atlas_joint_stop_t atlas_joint_packet_payload_joint_stop_t;
+typedef atlas_joint_reset_t atlas_joint_packet_payload_joint_reset_t;
 typedef atlas_joint_reference_t atlas_joint_packet_payload_joint_reference_t;
 
 typedef union {
     atlas_joint_packet_payload_joint_start_t joint_start;
     atlas_joint_packet_payload_joint_stop_t joint_stop;
+    atlas_joint_packet_payload_joint_reset_t joint_reset;
     atlas_joint_packet_payload_joint_reference_t joint_reference;
 } atlas_joint_packet_payload_t;
 

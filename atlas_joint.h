@@ -27,14 +27,13 @@ typedef struct {
 } atlas_joint_stop_t;
 
 typedef struct {
+} atlas_joint_reset_t;
+
+typedef struct {
 } atlas_joint_ready_t;
 
 typedef struct {
 } atlas_joint_fault_t;
-
-typedef struct {
-    float32_t position;
-} atlas_joint_data_t;
 
 typedef struct {
     float32_t position;
@@ -55,5 +54,6 @@ bool atlas_joint_measure_is_equal(atlas_joint_measure_t const* measure1,
                                   atlas_joint_measure_t const* measure2);
 
 void atlas_joint_measure_print(atlas_joint_measure_t const* measure);
+
 
 #endif // ATLAS_CORE_ATLAS_JOINT_H
