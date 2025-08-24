@@ -36,26 +36,25 @@ void atlas_cartesian_data_print(atlas_cartesian_data_t const* data)
 {
     ATLAS_ASSERT(data != NULL);
 
-    atlas_log("position x: %d, y: %d, z: %d orientation x: %d, y: %d, z: %d "
-              "[deg * 100]\n\r",
-              (int32_t)data->position.x * 100,
-              (int32_t)data->position.y * 100,
-              (int32_t)data->position.z * 100,
-              (int32_t)data->orientation.x * 100,
-              (int32_t)data->orientation.y * 100,
-              (int32_t)data->orientation.z * 100);
+    atlas_log(
+        "position x: %f, y: %f, z: %f orientation x: %f, y: %f, z: %f\n\r",
+        data->position.x,
+        data->position.y,
+        data->position.z,
+        data->orientation.x,
+        data->orientation.y,
+        data->orientation.z);
 }
 
 void atlas_joints_data_print(atlas_joints_data_t const* data)
 {
     ATLAS_ASSERT(data != NULL);
 
-    atlas_log(
-        "position 1: %d, 2: %d, 3: %d, 4: %d, 5: %d, 6: %d [deg * 100]\n\r",
-        (int32_t)data->positions[ATLAS_JOINT_NUM_1] * 100,
-        (int32_t)data->positions[ATLAS_JOINT_NUM_2] * 100,
-        (int32_t)data->positions[ATLAS_JOINT_NUM_3] * 100,
-        (int32_t)data->positions[ATLAS_JOINT_NUM_4] * 100,
-        (int32_t)data->positions[ATLAS_JOINT_NUM_5] * 100,
-        (int32_t)data->positions[ATLAS_JOINT_NUM_6] * 100);
+    atlas_log("position 1: %f, 2: %f, 3: %f, 4: %f, 5: %f, 6: %f\n\r",
+              data->positions[ATLAS_JOINT_NUM_1],
+              data->positions[ATLAS_JOINT_NUM_2],
+              data->positions[ATLAS_JOINT_NUM_3],
+              data->positions[ATLAS_JOINT_NUM_4],
+              data->positions[ATLAS_JOINT_NUM_5],
+              data->positions[ATLAS_JOINT_NUM_6]);
 }
