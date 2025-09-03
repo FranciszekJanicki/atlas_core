@@ -165,6 +165,13 @@ static inline void atlas_robot_packet_checksum_decode(
                           checksum);
 }
 
+static inline void atlas_robot_packet_checksum_calculate(
+    uint8_t const* buffer,
+    atlas_robot_packet_checksum_t* checksum)
+{
+    atlas_checksum_encode(checksum, (uint8_t (*)[ATLAS_CHECKSUM_SIZE])buffer);
+}
+
 void atlas_robot_packet_encode(atlas_robot_packet_t const* packet,
                                uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE])
 {
@@ -186,10 +193,6 @@ void atlas_robot_packet_encode(atlas_robot_packet_t const* packet,
     uint8_t* timestamp_buffer =
         payload_buffer + sizeof(atlas_robot_packet_payload_t);
     atlas_robot_packet_timestamp_encode(&packet->timestamp, timestamp_buffer);
-
-    uint8_t* checksum_buffer =
-        timestamp_buffer + sizeof(atlas_robot_packet_timestamp_t);
-    atlas_robot_packet_checksum_encode(&packet->checksum, checksum_buffer);
 }
 
 void atlas_robot_packet_decode(const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE],
@@ -213,10 +216,6 @@ void atlas_robot_packet_decode(const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE],
     uint8_t* timestamp_buffer =
         payload_buffer + sizeof(atlas_robot_packet_origin_t);
     atlas_robot_packet_timestamp_decode(timestamp_buffer, &packet->timestamp);
-
-    uint8_t* checksum_buffer =
-        timestamp_buffer + sizeof(atlas_robot_packet_timestamp_t);
-    atlas_robot_packet_checksum_decode(checksum_buffer, &packet->checksum);
 }
 
 static inline void atlas_joint_packet_type_encode(
@@ -318,6 +317,14 @@ static inline void atlas_joint_packet_timestamp_encode(
                            (uint8_t (*)[ATLAS_TIMESTAMP_SIZE])buffer);
 }
 
+static inline void atlas_joint_packet_timestamp_decode(
+    uint8_t const* buffer,
+    atlas_joint_packet_timestamp_t* timestamp)
+{
+    atlas_timestamp_decode((const uint8_t (*)[ATLAS_TIMESTAMP_SIZE])buffer,
+                           timestamp);
+}
+
 static inline void atlas_joint_packet_checksum_encode(
     atlas_joint_packet_checksum_t const* checksum,
     uint8_t* buffer)
@@ -333,13 +340,22 @@ static inline void atlas_joint_packet_checksum_decode(
                           checksum);
 }
 
-static inline void atlas_joint_packet_timestamp_decode(
+static inline void atlas_joint_packet_checksum_calculate(
     uint8_t const* buffer,
-    atlas_joint_packet_timestamp_t* timestamp)
+    atlas_joint_packet_checksum_t* checksum)
 {
-    atlas_timestamp_decode((const uint8_t (*)[ATLAS_TIMESTAMP_SIZE])buffer,
-                           timestamp);
+    atlas_checksum_encode(checksum, (uint8_t (*)[ATLAS_CHECKSUM_SIZE])buffer);
 }
+
+void atlas_robot_packet_encode_with_checksum(
+    atlas_robot_packet_t const* packet,
+    uint8_t (*buffer)[ATLAS_ROBOT_PACKET_WITH_CHECKSUM_SIZE])
+{}
+
+void atlas_robot_packet_decode_with_checksum(
+    const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_WITH_CHECKSUM_SIZE],
+    atlas_robot_packet_t* packet)
+{}
 
 void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
                                uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE])
@@ -358,10 +374,6 @@ void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
     uint8_t* timestamp_buffer =
         payload_buffer + sizeof(atlas_joint_packet_payload_t);
     atlas_joint_packet_timestamp_encode(&packet->timestamp, timestamp_buffer);
-
-    uint8_t* checksum_buffer =
-        timestamp_buffer + sizeof(atlas_joint_packet_timestamp_t);
-    atlas_joint_packet_checksum_encode(&packet->checksum, checksum_buffer);
 }
 
 void atlas_joint_packet_decode(const uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE],
@@ -381,10 +393,49 @@ void atlas_joint_packet_decode(const uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE],
     uint8_t* timestamp_buffer =
         payload_buffer + sizeof(atlas_joint_packet_payload_t);
     atlas_joint_packet_timestamp_decode(timestamp_buffer, &packet->timestamp);
+}
 
-    uint8_t* checksum_buffer =
-        timestamp_buffer + sizeof(atlas_joint_packet_timestamp_t);
-    atlas_joint_packet_checksum_decode(checksum_buffer, &packet->checksum);
+void atlas_joint_packet_encode_with_checksum(
+    atlas_joint_packet_t const* packet,
+    uint8_t (*buffer)[ATLAS_JOINT_PACKET_WITH_CHECKSUM_SIZE])
+{
+    ATLAS_ASSERT(packet != NULL);
+    ATLAS_ASSERT(buffer != NULL);
+
+    uint8_t* packet_buffer = *buffer;
+    atlas_joint_packet_encode(
+        packet,
+        (uint8_t (*)[ATLAS_JOINT_PACKET_SIZE])packet_buffer);
+
+    atlas_joint_packet_checksum_t checksum;
+    atlas_joint_packet_checksum_calculate(packet_buffer, &checksum);
+
+    uint8_t* checksum_buffer = packet_buffer + sizeof(atlas_joint_packet_t);
+    atlas_joint_packet_checksum_encode(&checksum, checksum_buffer);
+}
+
+void atlas_joint_packet_decode_with_checksum(
+    const uint8_t (*buffer)[ATLAS_JOINT_PACKET_WITH_CHECKSUM_SIZE],
+    atlas_joint_packet_t* packet)
+{
+    ATLAS_ASSERT(packet != NULL);
+    ATLAS_ASSERT(buffer != NULL);
+
+    uint8_t* packet_buffer = *buffer;
+    atlas_joint_packet_decode(
+        (const uint8_t (*)[ATLAS_JOINT_PACKET_SIZE])packet_buffer,
+        packet);
+
+    atlas_joint_packet_checksum_t calculated_checksum, received_checksum;
+    atlas_joint_packet_checksum_calculate(packet_buffer, &calculated_checksum);
+
+    uint8_t* checksum_buffer = packet_buffer + sizeof(atlas_joint_packet_t);
+    atlas_joint_packet_checksum_decode(checksum_buffer, &received_checksum);
+
+    if (received_checksum != calculated_checksum) {
+        // ATLAS_ASSERT(false);
+        atlas_log("Joint packet checksum mismatch!\n\r");
+    }
 }
 
 static inline void atlas_robot_packet_type_print(atlas_robot_packet_type_t type)
@@ -452,7 +503,6 @@ void atlas_robot_packet_print(atlas_robot_packet_t const* packet)
     atlas_robot_packet_origin_print(packet->origin);
     atlas_robot_packet_payload_print(packet->type, &packet->payload);
     atlas_robot_packet_timestamp_print(&packet->timestamp);
-    atlas_robot_packet_checksum_print(&packet->checksum);
 }
 
 static inline void atlas_joint_packet_type_print(atlas_joint_packet_type_t type)
@@ -520,5 +570,4 @@ void atlas_joint_packet_print(atlas_joint_packet_t const* packet)
     atlas_joint_packet_type_print(packet->type);
     atlas_joint_packet_payload_print(packet->type, &packet->payload);
     atlas_joint_packet_timestamp_print(&packet->timestamp);
-    atlas_joint_packet_checksum_print(&packet->checksum);
 }

@@ -14,7 +14,6 @@ typedef enum {
 
 typedef atlas_joint_num_t atlas_robot_packet_origin_t;
 typedef atlas_timestamp_t atlas_robot_packet_timestamp_t;
-typedef atlas_checksum_t atlas_robot_packet_checksum_t;
 
 typedef atlas_joint_ready_t atlas_robot_packet_payload_joint_ready_t;
 typedef atlas_joint_fault_t atlas_robot_packet_payload_joint_fault_t;
@@ -31,17 +30,19 @@ typedef struct {
     atlas_robot_packet_origin_t origin;
     atlas_robot_packet_payload_t payload;
     atlas_robot_packet_timestamp_t timestamp;
-    atlas_robot_packet_checksum_t checksum;
 } atlas_robot_packet_t;
 
 #define ATLAS_ROBOT_PACKET_SIZE                                                \
     (sizeof(atlas_robot_packet_timestamp_t) +                                  \
      sizeof(atlas_robot_packet_type_t) + sizeof(atlas_robot_packet_origin_t) + \
-     sizeof(atlas_robot_packet_payload_t) +                                    \
-     sizeof(atlas_robot_packet_checksum_t))
+     sizeof(atlas_robot_packet_payload_t))
+
+typedef atlas_checksum_t atlas_robot_packet_checksum_t;
+
+#define ATLAS_ROBOT_PACKET_WITH_CHECKSUM_SIZE \
+    (ATLAS_ROBOT_PACKET_SIZE + sizeof(atlas_robot_packet_checksum_t))
 
 typedef atlas_timestamp_t atlas_joint_packet_timestamp_t;
-typedef atlas_checksum_t atlas_joint_packet_checksum_t;
 
 typedef enum {
     ATLAS_JOINT_PACKET_TYPE_JOINT_START,
@@ -66,24 +67,40 @@ typedef struct {
     atlas_joint_packet_type_t type;
     atlas_joint_packet_payload_t payload;
     atlas_joint_packet_timestamp_t timestamp;
-    atlas_joint_packet_checksum_t checksum;
 } atlas_joint_packet_t;
 
 #define ATLAS_JOINT_PACKET_SIZE               \
     (sizeof(atlas_joint_packet_timestamp_t) + \
-     sizeof(atlas_joint_packet_type_t) +      \
-     sizeof(atlas_joint_packet_payload_t) +   \
-     sizeof(atlas_joint_packet_checksum_t))
+     sizeof(atlas_joint_packet_type_t) + sizeof(atlas_joint_packet_payload_t))
+
+typedef atlas_checksum_t atlas_joint_packet_checksum_t;
+
+#define ATLAS_JOINT_PACKET_WITH_CHECKSUM_SIZE \
+    (ATLAS_JOINT_PACKET_SIZE + sizeof(atlas_joint_packet_checksum_t))
 
 void atlas_robot_packet_encode(atlas_robot_packet_t const* packet,
                                uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE]);
 void atlas_robot_packet_decode(const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE],
                                atlas_robot_packet_t* packet);
 
+void atlas_robot_packet_encode_with_checksum(
+    atlas_robot_packet_t const* packet,
+    uint8_t (*buffer)[ATLAS_ROBOT_PACKET_WITH_CHECKSUM_SIZE]);
+void atlas_robot_packet_decode_with_checksum(
+    const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_WITH_CHECKSUM_SIZE],
+    atlas_robot_packet_t* packet);
+
 void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
                                uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE]);
 void atlas_joint_packet_decode(const uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE],
                                atlas_joint_packet_t* packet);
+
+void atlas_joint_packet_encode_with_checksum(
+    atlas_joint_packet_t const* packet,
+    uint8_t (*buffer)[ATLAS_JOINT_PACKET_WITH_CHECKSUM_SIZE]);
+void atlas_joint_packet_decode_with_checksum(
+    const uint8_t (*buffer)[ATLAS_JOINT_PACKET_WITH_CHECKSUM_SIZE],
+    atlas_joint_packet_t* packet);
 
 void atlas_robot_packet_print(atlas_robot_packet_t const* packet);
 void atlas_joint_packet_print(atlas_joint_packet_t const* packet);
