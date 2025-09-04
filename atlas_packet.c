@@ -350,12 +350,44 @@ static inline void atlas_joint_packet_checksum_calculate(
 void atlas_robot_packet_encode_with_checksum(
     atlas_robot_packet_t const* packet,
     uint8_t (*buffer)[ATLAS_ROBOT_PACKET_WITH_CHECKSUM_SIZE])
-{}
+{
+    ATLAS_ASSERT(packet != NULL);
+    ATLAS_ASSERT(buffer != NULL);
+
+    uint8_t* packet_buffer = *buffer;
+    atlas_robot_packet_encode(
+        packet,
+        (uint8_t (*)[ATLAS_ROBOT_PACKET_SIZE])packet_buffer);
+
+    atlas_robot_packet_checksum_t checksum;
+    atlas_robot_packet_checksum_calculate(packet_buffer, &checksum);
+
+    uint8_t* checksum_buffer = packet_buffer + sizeof(atlas_robot_packet_t);
+    atlas_robot_packet_checksum_encode(&checksum, checksum_buffer);
+}
 
 void atlas_robot_packet_decode_with_checksum(
     const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_WITH_CHECKSUM_SIZE],
     atlas_robot_packet_t* packet)
-{}
+{
+    ATLAS_ASSERT(packet != NULL);
+    ATLAS_ASSERT(buffer != NULL);
+
+    uint8_t* packet_buffer = *buffer;
+    atlas_robot_packet_decode(
+        (const uint8_t (*)[ATLAS_ROBOT_PACKET_SIZE])packet_buffer,
+        packet);
+
+    atlas_robot_packet_checksum_t calculated_checksum, received_checksum;
+    atlas_robot_packet_checksum_calculate(packet_buffer, &calculated_checksum);
+
+    uint8_t* checksum_buffer = packet_buffer + sizeof(atlas_robot_packet_t);
+    atlas_robot_packet_checksum_decode(checksum_buffer, &received_checksum);
+
+    if (received_checksum != calculated_checksum) {
+        atlas_log("Robot packet checksum mismatch!\n\r");
+    }
+}
 
 void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
                                uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE])
@@ -433,7 +465,6 @@ void atlas_joint_packet_decode_with_checksum(
     atlas_joint_packet_checksum_decode(checksum_buffer, &received_checksum);
 
     if (received_checksum != calculated_checksum) {
-        // ATLAS_ASSERT(false);
         atlas_log("Joint packet checksum mismatch!\n\r");
     }
 }
