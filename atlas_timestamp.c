@@ -3,13 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static char const* const timestamp_format = "%u-%u-%u %u:%u:%u";
-
 void atlas_timestamp_print(atlas_timestamp_t const* timestamp)
 {
     ATLAS_ASSERT(timestamp != NULL);
 
-    atlas_log("timestamp: %timestamp_format [DD-MM-YYYY HH:MM:SS]\n\r",
+    atlas_log("timestamp: %u-%u-%u %u:%u:%u [DD-MM-YYYY HH:MM:SS]\n\r",
               timestamp->day,
               timestamp->month,
               timestamp->year,
@@ -35,7 +33,7 @@ bool atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
 
     size_t needed_size = snprintf(NULL,
                                   0UL,
-                                  "%timestamp_format",
+                                  "%u-%u-%u %u:%u:%u",
                                   timestamp->day,
                                   timestamp->month,
                                   timestamp->year,

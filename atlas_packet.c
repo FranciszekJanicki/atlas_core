@@ -602,3 +602,33 @@ void atlas_joint_packet_print(atlas_joint_packet_t const* packet)
     atlas_joint_packet_payload_print(packet->type, &packet->payload);
     atlas_joint_packet_timestamp_print(&packet->timestamp);
 }
+
+void atlas_robot_packet_dump(atlas_robot_packet_t const* packet)
+{
+    ATLAS_ASSERT(packet != NULL);
+
+    atlas_log("Robot packet dump:\r\n");
+
+    for (uint8_t* byte = (uint8_t*)packet;
+         byte < (uint8_t*)packet + ATLAS_ROBOT_PACKET_SIZE;
+         ++byte) {
+        atlas_log("0x%02X ", *byte);
+    }
+
+    atlas_log("\r\n");
+}
+
+void atlas_joint_packet_dump(atlas_joint_packet_t const* packet)
+{
+    ATLAS_ASSERT(packet != NULL);
+
+    atlas_log("Joint packet dump:\r\n");
+
+    for (uint8_t* byte = (uint8_t*)packet;
+         byte < (uint8_t*)packet + ATLAS_JOINT_PACKET_SIZE;
+         ++byte) {
+        atlas_log("0x%02X ", *byte);
+    }
+
+    atlas_log("\r\n");
+}

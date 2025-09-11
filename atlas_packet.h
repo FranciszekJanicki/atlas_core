@@ -105,4 +105,7 @@ void atlas_joint_packet_decode_with_checksum(
 void atlas_robot_packet_print(atlas_robot_packet_t const* packet);
 void atlas_joint_packet_print(atlas_joint_packet_t const* packet);
 
+void atlas_robot_packet_dump(atlas_robot_packet_t const* packet);
+void atlas_joint_packet_dump(atlas_joint_packet_t const* packet);
+
 #endif // ATLAS_CORE_ATLAS_PACKET_H
