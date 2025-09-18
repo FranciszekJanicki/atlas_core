@@ -52,6 +52,9 @@ typedef enum {
     ATLAS_ROBOT_STATE_INVALID,
 } atlas_robot_state_t;
 
+typedef struct {
+} atlas_robot_config_t;
+
 bool atlas_robot_data_is_equal(atlas_robot_data_t const* data1,
                                atlas_robot_data_t const* data2);
 
