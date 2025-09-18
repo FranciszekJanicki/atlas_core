@@ -11,6 +11,7 @@ typedef enum {
 } atlas_robot_data_type_t;
 
 typedef atlas_joints_data_t atlas_robot_data_payload_joints_t;
+
 typedef atlas_cartesian_data_t atlas_robot_data_payload_cartesian_t;
 
 typedef union {
@@ -30,6 +31,7 @@ typedef enum {
 } atlas_robot_path_type_t;
 
 typedef atlas_joints_path_t atlas_robot_path_payload_joints_t;
+
 typedef atlas_cartesian_path_t atlas_robot_path_payload_cartesian_t;
 
 typedef union {
@@ -51,9 +53,6 @@ typedef enum {
     ATLAS_ROBOT_STATE_JOG,
     ATLAS_ROBOT_STATE_INVALID,
 } atlas_robot_state_t;
-
-typedef struct {
-} atlas_robot_config_t;
 
 bool atlas_robot_data_is_equal(atlas_robot_data_t const* data1,
                                atlas_robot_data_t const* data2);

@@ -6,6 +6,7 @@
 #include "atlas_log.h"
 #include "atlas_packet.h"
 #include "atlas_robot.h"
+#include "atlas_sd.h"
 #include "atlas_timestamp.h"
 #include "atlas_utility.h"
 

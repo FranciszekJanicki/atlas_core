@@ -13,30 +13,54 @@ typedef struct {
     char filename[ATLAS_SD_PATH_FILENAME_MAXLEN];
 } atlas_sd_path_t;
 
+typedef enum {
+    ATLAS_SD_COMMAND_TYPE_MOUNT_CARD,
+    ATLAS_SD_COMMAND_TYPE_UNMOUNT_CARD,
+    ATLAS_SD_COMMAND_TYPE_SAVE_PATH,
+    ATLAS_SD_COMMAND_TYPE_LOAD_PATH,
+    ATLAS_SD_COMMAND_TYPE_REMOVE_PATH,
+} atlas_sd_command_type_t;
+
+typedef struct {
+    atlas_sd_path_t path;
+} atlas_sd_command_path_t;
+
+typedef struct {
+    char mount_point[ATLAS_SD_MOUNT_POINT_MAXLEN];
+} atlas_sd_mount_point_t;
+
+typedef struct {
+    atlas_sd_mount_point_t mount_point;
+} atlas_sd_command_payload_mount_card_t;
+
+typedef struct {
+    atlas_sd_mount_point_t mount_point;
+} atlas_sd_command_payload_unmount_card_t;
+
 typedef struct {
     atlas_sd_path_t sd_path;
     atlas_robot_path_t robot_path;
-} atlas_sd_save_path_t;
-
-typedef struct {
-    sd_path_t sd_path;
-} atlas_sd_load_path_t;
+} atlas_sd_command_payload_save_path_t;
 
 typedef struct {
     atlas_sd_path_t sd_path;
-    atlas_robot_config_t robot_config;
-} atlas_sd_save_config_t;
+} atlas_sd_command_payload_load_path_t;
 
 typedef struct {
     atlas_sd_path_t sd_path;
-} atlas_sd_load_config_t;
+} atlas_sd_command_payload_remove_path_t;
+
+typedef union {
+    atlas_sd_command_payload_mount_card_t mount_card;
+    atlas_sd_command_payload_unmount_card_t unmount_card;
+    atlas_sd_command_payload_save_path_t save_path;
+    atlas_sd_command_payload_load_path_t load_path;
+    atlas_sd_command_payload_remove_path_t remove_path;
+} atlas_sd_command_payload_t;
 
 typedef struct {
-    atlas_sd_path_t sd_path;
-} atlas_sd_remove_path_t;
-
-typedef struct {
-    atlas_sd_path_t sd_path;
-} atlas_sd_remove_config_t;
+    atlas_sd_command_type_t type;
+    atlas_sd_command_payload_t payload;
+} atlas_sd_command_t;
 
 #endif // ATLAS_CORE_ATLAS_SD_H

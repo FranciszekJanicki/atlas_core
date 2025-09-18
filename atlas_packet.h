@@ -13,10 +13,13 @@ typedef enum {
 } atlas_robot_packet_type_t;
 
 typedef atlas_joint_num_t atlas_robot_packet_origin_t;
+
 typedef atlas_timestamp_t atlas_robot_packet_timestamp_t;
 
 typedef atlas_joint_ready_t atlas_robot_packet_payload_joint_ready_t;
+
 typedef atlas_joint_fault_t atlas_robot_packet_payload_joint_fault_t;
+
 typedef atlas_joint_measure_t atlas_robot_packet_payload_joint_measure_t;
 
 typedef union {
@@ -52,8 +55,11 @@ typedef enum {
 } atlas_joint_packet_type_t;
 
 typedef atlas_joint_start_t atlas_joint_packet_payload_joint_start_t;
+
 typedef atlas_joint_stop_t atlas_joint_packet_payload_joint_stop_t;
+
 typedef atlas_joint_reset_t atlas_joint_packet_payload_joint_reset_t;
+
 typedef atlas_joint_reference_t atlas_joint_packet_payload_joint_reference_t;
 
 typedef union {
