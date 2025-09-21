@@ -21,13 +21,9 @@ typedef enum {
     ATLAS_SD_COMMAND_TYPE_REMOVE_PATH,
 } atlas_sd_command_type_t;
 
-typedef struct {
-    atlas_sd_path_t path;
-} atlas_sd_command_path_t;
-
-typedef struct {
-    char mount_point[ATLAS_SD_MOUNT_POINT_MAXLEN];
-} atlas_sd_mount_point_t;
+typedef void* atlas_sd_filesystem_t;
+typedef atlas_sd_path_t atlas_sd_command_path_t;
+typedef char atlas_sd_mount_point_t[ATLAS_SD_MOUNT_POINT_MAXLEN];
 
 typedef struct {
     atlas_sd_mount_point_t mount_point;
