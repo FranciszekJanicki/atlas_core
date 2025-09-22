@@ -3,6 +3,9 @@
 
 #include "atlas_data.h"
 #include "atlas_path.h"
+#include <stdint.h>
+
+#define ATLAS_ROBOT_PATH_MAXLEN (10U)
 
 typedef enum {
     ATLAS_ROBOT_DATA_TYPE_JOINTS,
@@ -11,7 +14,6 @@ typedef enum {
 } atlas_robot_data_type_t;
 
 typedef atlas_joints_data_t atlas_robot_data_payload_joints_t;
-
 typedef atlas_cartesian_data_t atlas_robot_data_payload_cartesian_t;
 
 typedef union {
@@ -24,28 +26,13 @@ typedef struct {
     atlas_robot_data_payload_t payload;
 } atlas_robot_data_t;
 
-typedef enum {
-    ATLAS_ROBOT_PATH_TYPE_JOINTS,
-    ATLAS_ROBOT_PATH_TYPE_CARTESIAN,
-    ATLAS_ROBOT_PATH_TYPE_NONE,
-} atlas_robot_path_type_t;
-
-typedef atlas_joints_path_t atlas_robot_path_payload_joints_t;
-
-typedef atlas_cartesian_path_t atlas_robot_path_payload_cartesian_t;
-
-typedef union {
-    atlas_robot_path_payload_joints_t joints;
-    atlas_robot_path_payload_cartesian_t cartesian;
-} atlas_robot_path_payload_t;
+typedef uint8_t atlas_robot_path_length_t;
+typedef atlas_robot_data_t atlas_robot_path_point_t;
 
 typedef struct {
-    atlas_robot_path_type_t type;
-    atlas_robot_path_payload_t payload;
+    atlas_robot_path_length_t length;
+    atlas_robot_path_point_t points[ATLAS_ROBOT_PATH_MAXLEN];
 } atlas_robot_path_t;
-
-typedef struct {
-} atlas_robot_status_t;
 
 typedef enum {
     ATLAS_ROBOT_STATE_IDLE,

@@ -11,10 +11,16 @@ bool atlas_robot_data_is_equal(atlas_robot_data_t const* data1,
     ATLAS_ASSERT(data1 != NULL);
     ATLAS_ASSERT(data2 != NULL);
 
-    if (data1->type == ATLAS_ROBOT_DATA_TYPE_JOINTS &&
-        data2->type == ATLAS_ROBOT_DATA_TYPE_JOINTS) {
+    if (data1->type != data2->type) {
+        return false;
+    }
+
+    if (data1->type == ATLAS_ROBOT_DATA_TYPE_JOINTS) {
         return atlas_joints_data_is_equal(&data1->payload.joints,
                                           &data2->payload.joints);
+    } else if (data1->type == ATLAS_ROBOT_DATA_TYPE_CARTESIAN) {
+        return atlas_cartesian_data_is_equal(&data1->payload.cartesian,
+                                             &data2->payload.cartesian);
     }
 }
 
@@ -35,8 +41,12 @@ bool atlas_robot_path_is_equal(atlas_robot_path_t const* path1,
     ATLAS_ASSERT(path1 != NULL);
     ATLAS_ASSERT(path2 != NULL);
 
-    for (uint8_t i = 0U; i < path->used_points; ++i) {
-        if (!atlas_robot_data_is_equal(&path->data_points[i])) {
+    if (path1->length != path2->length) {
+        return false;
+    }
+
+    for (atlas_robot_path_length_t i = 0U; i < path1->length; ++i) {
+        if (!atlas_robot_data_is_equal(&path1->points[i], &path2->points[i])) {
             return false;
         }
     }
@@ -48,7 +58,7 @@ void atlas_robot_path_print(atlas_robot_path_t const* path)
 {
     ATLAS_ASSERT(path != NULL);
 
-    for (uint8_t i = 0U; i < path->used_points; ++i) {
-        atlas_robot_data_print(&path->data_points[i]);
+    for (uint8_t i = 0U; i < path->length; ++i) {
+        atlas_robot_data_print(&path->points[i]);
     }
 }

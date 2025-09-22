@@ -8,9 +8,13 @@ bool atlas_cartesian_path_is_equal(atlas_cartesian_path_t const* path1,
     ATLAS_ASSERT(path1 != NULL);
     ATLAS_ASSERT(path2 != NULL);
 
-    for (uint8_t num = 0U; num < ATLAS_CARTESIAN_PATH_MAX_POINTS; ++num) {
-        if (!atlas_cartesian_data_is_equal(&path1->points[num],
-                                           &path2->points[num])) {
+    if (path1->length != path2->length) {
+        return false;
+    }
+
+    for (atlas_path_length_t i = 0U; i < path1->length; ++i) {
+        if (!atlas_cartesian_data_is_equal(&path1->points[i],
+                                           &path2->points[i])) {
             return false;
         }
     }
@@ -24,9 +28,12 @@ bool atlas_joints_path_is_equal(atlas_joints_path_t const* path1,
     ATLAS_ASSERT(path1 != NULL);
     ATLAS_ASSERT(path2 != NULL);
 
-    for (uint8_t num = 0U; num < ATLAS_JOINTS_PATH_MAX_POINTS; ++num) {
-        if (!atlas_joints_data_is_equal(&path1->points[num],
-                                        &path2->points[num])) {
+    if (path1->length != path2->length) {
+        return false;
+    }
+
+    for (atlas_path_length_t i = 0U; i < path1->length; ++i) {
+        if (!atlas_joints_data_is_equal(&path1->points[i], &path2->points[i])) {
             return false;
         }
     }
@@ -38,8 +45,8 @@ void atlas_cartesian_path_print(atlas_cartesian_path_t const* path)
 {
     ATLAS_ASSERT(path != NULL);
 
-    for (uint8_t point = 0U; point < ATLAS_CARTESIAN_PATH_MAX_POINTS; ++point) {
-        atlas_cartesian_data_print(&path->points[point]);
+    for (atlas_path_length_t i = 0U; i < path->length; ++i) {
+        atlas_cartesian_data_print(&path->points[i]);
     }
 }
 
@@ -47,7 +54,7 @@ void atlas_joints_path_print(atlas_joints_path_t const* path)
 {
     ATLAS_ASSERT(path != NULL);
 
-    for (uint8_t point = 0U; point < ATLAS_JOINTS_PATH_MAX_POINTS; ++point) {
-        atlas_joints_data_print(&path->points[point]);
+    for (atlas_path_length_t i = 0U; i < path->length; ++i) {
+        atlas_joints_data_print(&path->points[i]);
     }
 }

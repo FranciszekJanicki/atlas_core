@@ -6,15 +6,18 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define ATLAS_CARTESIAN_PATH_MAX_POINTS (10U)
-#define ATLAS_JOINTS_PATH_MAX_POINTS (10U)
+#define ATLAS_PATH_MAX_LENGTH (10U)
+
+typedef uint8_t atlas_path_length_t;
 
 typedef struct {
-    atlas_joints_data_t points[ATLAS_JOINTS_PATH_MAX_POINTS];
+    atlas_path_length_t length;
+    atlas_joints_data_t points[ATLAS_PATH_MAX_LENGTH];
 } atlas_joints_path_t;
 
 typedef struct {
-    atlas_cartesian_data_t points[ATLAS_CARTESIAN_PATH_MAX_POINTS];
+    atlas_path_length_t length;
+    atlas_cartesian_data_t points[ATLAS_PATH_MAX_LENGTH];
 } atlas_cartesian_path_t;
 
 bool atlas_cartesian_path_is_equal(atlas_cartesian_path_t const* path1,

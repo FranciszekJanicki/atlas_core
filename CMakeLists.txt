@@ -4,7 +4,7 @@ target_sources(atlas_core PRIVATE
     atlas_err.c
     atlas_log.c
     atlas_data.c
-    atlas_path.c
+    atlas_robot.c
     atlas_packet.c
     atlas_timestamp.c
     atlas_checksum.c
