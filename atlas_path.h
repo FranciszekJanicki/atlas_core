@@ -28,4 +28,18 @@ bool atlas_joints_path_is_equal(atlas_joints_path_t const* path1,
 void atlas_cartesian_path_print(atlas_cartesian_path_t const* path);
 void atlas_joints_path_print(atlas_joints_path_t const* path);
 
+bool atlas_cartesian_path_to_string(atlas_cartesian_path_t const* path,
+                                    char* string,
+                                    size_t string_length);
+bool atlas_joints_path_to_string(atlas_joints_path_t const* path,
+                                 char* string,
+                                 size_t string_length);
+
+bool atlas_cartesian_path_from_string(char const* string,
+                                      size_t string_length,
+                                      atlas_cartesian_path_t* path);
+bool atlas_joints_path_from_string(char const* string,
+                                   size_t string_length,
+                                   atlas_joints_path_t* path);
+
 #endif // ATLAS_CORE_ATLAS_PATH_H

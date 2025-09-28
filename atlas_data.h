@@ -4,6 +4,7 @@
 #include "atlas_joint.h"
 #include "atlas_types.h"
 #include <stdbool.h>
+#include <stddef.h>
 
 typedef struct {
     float32_t positions[ATLAS_JOINT_NUM];
@@ -21,5 +22,19 @@ bool atlas_joints_data_is_equal(atlas_joints_data_t const* data1,
 
 void atlas_cartesian_data_print(atlas_cartesian_data_t const* data);
 void atlas_joints_data_print(atlas_joints_data_t const* data);
+
+bool atlas_cartesian_data_to_string(atlas_cartesian_data_t const* data,
+                                    char* string,
+                                    size_t string_length);
+bool atlas_joints_data_to_string(atlas_joints_data_t const* data,
+                                 char* string,
+                                 size_t string_length);
+
+bool atlas_cartesian_data_from_string(const char* string,
+                                      size_t string_length,
+                                      atlas_cartesian_data_t* data);
+bool atlas_joints_data_from_string(const char* string,
+                                   size_t string_length,
+                                   atlas_joints_data_t* data);
 
 #endif // ATLAS_CORE_ATLAS_DATA_H
