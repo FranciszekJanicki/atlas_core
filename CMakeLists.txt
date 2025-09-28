@@ -9,6 +9,7 @@ target_sources(atlas_core PRIVATE
     atlas_timestamp.c
     atlas_checksum.c
     atlas_joint.c
+    atlas_path.c
 )
 
 target_include_directories(atlas_core PUBLIC

@@ -46,9 +46,25 @@ bool atlas_robot_data_is_equal(atlas_robot_data_t const* data1,
 
 void atlas_robot_data_print(atlas_robot_data_t const* data);
 
+bool atlas_robot_data_to_string(atlas_robot_data_t const* data,
+                                char* string,
+                                size_t string_length);
+
+bool atlas_robot_data_from_string(char const* string,
+                                  size_t string_length,
+                                  atlas_robot_data_t* data);
+
 bool atlas_robot_path_is_equal(atlas_robot_path_t const* path1,
                                atlas_robot_path_t const* path2);
 
 void atlas_robot_path_print(atlas_robot_path_t const* path);
+
+bool atlas_robot_path_to_string(atlas_robot_path_t const* path,
+                                char* string,
+                                size_t string_length);
+
+bool atlas_robot_path_from_string(char const* string,
+                                  size_t string_length,
+                                  atlas_robot_path_t* path);
 
 #endif // ATLAS_CORE_ATLAS_ROBOT_H

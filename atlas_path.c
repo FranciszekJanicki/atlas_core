@@ -84,7 +84,7 @@ bool atlas_cartesian_path_to_string(atlas_cartesian_path_t const* path,
             return false;
         }
 
-        strncat(line, string_length - used_length, "\n");
+        strncat(line, "\n", string_length - used_length);
         used_length += line_length + 1UL;
     }
 
@@ -117,7 +117,7 @@ bool atlas_joints_path_to_string(atlas_joints_path_t const* path,
             return false;
         }
 
-        strncat(line, string_length - used_length, "\n");
+        strncat(line, "\n", string_length - used_length);
         used_length += line_length + 1UL;
     }
 
@@ -181,8 +181,8 @@ bool atlas_joints_path_from_string(char const* string,
         char* line = string + parsed_length;
         size_t line_length = endline - line;
         if (!atlas_joints_data_from_string(line,
-                                              line_length,
-                                              &path->points[i])) {
+                                           line_length,
+                                           &path->points[i])) {
             return false;
         }
 

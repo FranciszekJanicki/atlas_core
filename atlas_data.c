@@ -67,16 +67,15 @@ bool atlas_cartesian_data_to_string(atlas_cartesian_data_t const* data,
     ATLAS_ASSERT(string != NULL);
     ATLAS_ASSERT(string_length > 0UL);
 
-    int written =
-        snprintf(string,
-                 string_length,
-                 "position x: %f, y: %f, z: %f orientation x: %f, y: %f, z: %f",
-                 data->position.x,
-                 data->position.y,
-                 data->position.z,
-                 data->orientation.x,
-                 data->orientation.y,
-                 data->orientation.z);
+    int written = snprintf(string,
+                           string_length,
+                           "CARTESIAN: %f %f %f %f %f %f",
+                           data->position.x,
+                           data->position.y,
+                           data->position.z,
+                           data->orientation.x,
+                           data->orientation.y,
+                           data->orientation.z);
 
     if (written < 0) {
         return false;
@@ -97,7 +96,7 @@ bool atlas_joints_data_to_string(atlas_joints_data_t const* data,
 
     int written = snprintf(string,
                            string_length,
-                           "position 1: %f, 2: %f, 3: %f, 4: %f, 5: %f, 6: %f",
+                           "JOINTS: %f %f %f %f %f %f",
                            data->positions[ATLAS_JOINT_NUM_1],
                            data->positions[ATLAS_JOINT_NUM_2],
                            data->positions[ATLAS_JOINT_NUM_3],
@@ -140,15 +139,14 @@ bool atlas_cartesian_data_from_string(const char* string,
 
     string_with_null[string_length - 1] = '\0';
 
-    int read =
-        sscanf(string_with_null,
-               "position x: %f, y: %f, z: %f orientation x: %f, y: %f, z: %f",
-               &data->position.x,
-               &data->position.y,
-               &data->position.z,
-               &data->orientation.x,
-               &data->orientation.y,
-               &data->orientation.z);
+    int read = sscanf(string_with_null,
+                      "CARTESIAN: %f %f %f %f %f %f",
+                      &data->position.x,
+                      &data->position.y,
+                      &data->position.z,
+                      &data->orientation.x,
+                      &data->orientation.y,
+                      &data->orientation.z);
 
     if (used_malloc) {
         vPortFree(string_with_null);
@@ -187,15 +185,14 @@ bool atlas_joints_data_from_string(const char* string,
 
     string_with_null[string_length - 1] = '\0';
 
-    int read =
-        sscanf(string_with_null,
-               "position x: %f, y: %f, z: %f orientation x: %f, y: %f, z: %f",
-               &data->positions[ATLAS_JOINT_NUM_1],
-               &data->positions[ATLAS_JOINT_NUM_2],
-               &data->positions[ATLAS_JOINT_NUM_3],
-               &data->positions[ATLAS_JOINT_NUM_4],
-               &data->positions[ATLAS_JOINT_NUM_5],
-               &data->positions[ATLAS_JOINT_NUM_6]);
+    int read = sscanf(string_with_null,
+                      "JOINTS: %f %f %f %f %f %f",
+                      &data->positions[ATLAS_JOINT_NUM_1],
+                      &data->positions[ATLAS_JOINT_NUM_2],
+                      &data->positions[ATLAS_JOINT_NUM_3],
+                      &data->positions[ATLAS_JOINT_NUM_4],
+                      &data->positions[ATLAS_JOINT_NUM_5],
+                      &data->positions[ATLAS_JOINT_NUM_6]);
 
     if (used_malloc) {
         vPortFree(string_with_null);
