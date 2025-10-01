@@ -10,6 +10,8 @@
 
 #define DEBUG
 
+#define ATLAS_DELAY(MS) vTaskDelay(pdMS_TO_TICKS(MS))
+
 #define ATLAS_PANIC()             \
     do {                          \
         taskDISABLE_INTERRUPTS(); \
