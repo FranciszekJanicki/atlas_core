@@ -27,9 +27,30 @@ typedef struct {
 } atlas_joint_stop_t;
 
 typedef struct {
+} atlas_joint_reset_t;
+
+typedef struct {
     float32_t position;
     float32_t delta_time;
 } atlas_joint_reference_t;
+
+typedef struct {
+    float32_t prop_gain;
+    float32_t int_gain;
+    float32_t dot_gain;
+    float32_t sat_gain;
+    float32_t dead_error;
+    float32_t min_speed;
+    float32_t max_speed;
+    float32_t home_position;
+    float32_t min_position;
+    float32_t max_position;
+    float32_t min_acceleration;
+    float32_t max_acceleration;
+    float32_t step_change;
+    float32_t current_limit;
+    bool magnet_polarity;
+} atlas_joint_parameters_t;
 
 typedef struct {
 } atlas_joint_ready_t;

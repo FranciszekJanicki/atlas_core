@@ -70,7 +70,9 @@ typedef atlas_checksum_t atlas_robot_packet_checksum_t;
 typedef enum {
     ATLAS_JOINT_PACKET_TYPE_JOINT_START,
     ATLAS_JOINT_PACKET_TYPE_JOINT_STOP,
+    ATLAS_JOINT_PACKET_TYPE_JOINT_RESET,
     ATLAS_JOINT_PACKET_TYPE_JOINT_REFERENCE,
+    ATLAS_JOINT_PACKET_TYPE_JOINT_PARAMETERS,
 } atlas_joint_packet_type_t;
 
 #define ATLAS_JOINT_PACKET_TYPE_OFFSET (0UL)
@@ -78,12 +80,16 @@ typedef enum {
 
 typedef atlas_joint_start_t atlas_joint_packet_payload_joint_start_t;
 typedef atlas_joint_stop_t atlas_joint_packet_payload_joint_stop_t;
+typedef atlas_joint_reset_t atlas_joint_packet_payload_joint_reset_t;
 typedef atlas_joint_reference_t atlas_joint_packet_payload_joint_reference_t;
+typedef atlas_joint_parameters_t atlas_joint_packet_payload_joint_parameters_t;
 
 typedef union {
     atlas_joint_packet_payload_joint_start_t joint_start;
     atlas_joint_packet_payload_joint_stop_t joint_stop;
+    atlas_joint_packet_payload_joint_reset_t joint_reset;
     atlas_joint_packet_payload_joint_reference_t joint_reference;
+    atlas_joint_packet_payload_joint_parameters_t joint_parameters;
 } atlas_joint_packet_payload_t;
 
 #define ATLAS_JOINT_PACKET_PAYLOAD_OFFSET \

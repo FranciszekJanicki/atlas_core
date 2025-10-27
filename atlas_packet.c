@@ -68,16 +68,8 @@ static inline void atlas_robot_packet_payload_joint_fault_encode(
     atlas_robot_packet_payload_joint_fault_t const* joint_fault,
     uint8_t* buffer)
 {
-    buffer[0] = joint_fault->message[0];
-    buffer[1] = joint_fault->message[1];
-    buffer[2] = joint_fault->message[2];
-    buffer[3] = joint_fault->message[3];
-    buffer[4] = joint_fault->message[4];
-    buffer[5] = joint_fault->message[5];
-    buffer[6] = joint_fault->message[6];
-    buffer[7] = joint_fault->message[7];
-    buffer[8] = joint_fault->message[8];
-    buffer[9] = joint_fault->message[9];
+    strncpy((char*)buffer, joint_fault->message, sizeof(joint_fault->message));
+    buffer[sizeof(joint_fault->message) - 1] = '\0';
 }
 
 static inline void atlas_robot_packet_payload_joint_measure_encode(
@@ -144,16 +136,10 @@ static inline void atlas_robot_packet_payload_joint_fault_decode(
     uint8_t const* buffer,
     atlas_robot_packet_payload_joint_fault_t* joint_fault)
 {
-    joint_fault->message[0] = buffer[0];
-    joint_fault->message[1] = buffer[1];
-    joint_fault->message[2] = buffer[2];
-    joint_fault->message[3] = buffer[3];
-    joint_fault->message[4] = buffer[4];
-    joint_fault->message[5] = buffer[5];
-    joint_fault->message[6] = buffer[6];
-    joint_fault->message[7] = buffer[7];
-    joint_fault->message[8] = buffer[8];
-    joint_fault->message[9] = buffer[9];
+    strncpy(joint_fault->message,
+            (char const*)buffer,
+            sizeof(joint_fault->message));
+    joint_fault->message[sizeof(joint_fault->message) - 1] = '\0';
 }
 
 static inline void atlas_robot_packet_payload_joint_measure_decode(
@@ -324,6 +310,11 @@ static inline void atlas_joint_packet_payload_joint_stop_encode(
     uint8_t* buffer)
 {}
 
+static inline void atlas_joint_packet_payload_joint_reset_encode(
+    atlas_joint_packet_payload_joint_reset_t const* joint_reset,
+    uint8_t* buffer)
+{}
+
 static inline void atlas_joint_packet_payload_joint_reference_encode(
     atlas_joint_packet_payload_joint_reference_t const* joint_reference,
     uint8_t* buffer)
@@ -343,6 +334,111 @@ static inline void atlas_joint_packet_payload_joint_reference_encode(
     buffer[7] = delta_time_buffer.data[3];
 }
 
+static inline void atlas_joint_packet_payload_joint_parameters_encode(
+    atlas_joint_packet_payload_joint_parameters_t const* joint_parameters,
+    uint8_t* buffer)
+{
+    uint8x4_t prop_gain_buffer =
+        float32_to_uint8x4_be(joint_parameters->prop_gain);
+    buffer[0] = prop_gain_buffer.data[0];
+    buffer[1] = prop_gain_buffer.data[1];
+    buffer[2] = prop_gain_buffer.data[2];
+    buffer[3] = prop_gain_buffer.data[3];
+
+    uint8x4_t int_gain_buffer =
+        float32_to_uint8x4_be(joint_parameters->int_gain);
+    buffer[4] = int_gain_buffer.data[0];
+    buffer[5] = int_gain_buffer.data[1];
+    buffer[6] = int_gain_buffer.data[2];
+    buffer[7] = int_gain_buffer.data[3];
+
+    uint8x4_t dot_gain_buffer =
+        float32_to_uint8x4_be(joint_parameters->dot_gain);
+    buffer[8] = dot_gain_buffer.data[0];
+    buffer[9] = dot_gain_buffer.data[1];
+    buffer[10] = dot_gain_buffer.data[2];
+    buffer[11] = dot_gain_buffer.data[3];
+
+    uint8x4_t sat_gain_buffer =
+        float32_to_uint8x4_be(joint_parameters->sat_gain);
+    buffer[12] = sat_gain_buffer.data[0];
+    buffer[13] = sat_gain_buffer.data[1];
+    buffer[14] = sat_gain_buffer.data[2];
+    buffer[15] = sat_gain_buffer.data[3];
+
+    uint8x4_t dead_error_buffer =
+        float32_to_uint8x4_be(joint_parameters->dead_error);
+    buffer[16] = dead_error_buffer.data[0];
+    buffer[17] = dead_error_buffer.data[1];
+    buffer[18] = dead_error_buffer.data[2];
+    buffer[19] = dead_error_buffer.data[3];
+
+    uint8x4_t min_speed_buffer =
+        float32_to_uint8x4_be(joint_parameters->min_speed);
+    buffer[20] = min_speed_buffer.data[0];
+    buffer[21] = min_speed_buffer.data[1];
+    buffer[22] = min_speed_buffer.data[2];
+    buffer[23] = min_speed_buffer.data[3];
+
+    uint8x4_t max_speed_buffer =
+        float32_to_uint8x4_be(joint_parameters->max_speed);
+    buffer[24] = max_speed_buffer.data[0];
+    buffer[25] = max_speed_buffer.data[1];
+    buffer[26] = max_speed_buffer.data[2];
+    buffer[27] = max_speed_buffer.data[3];
+
+    uint8x4_t home_position_buffer =
+        float32_to_uint8x4_be(joint_parameters->home_position);
+    buffer[28] = home_position_buffer.data[0];
+    buffer[29] = home_position_buffer.data[1];
+    buffer[30] = home_position_buffer.data[2];
+    buffer[31] = home_position_buffer.data[3];
+
+    uint8x4_t min_position_buffer =
+        float32_to_uint8x4_be(joint_parameters->min_position);
+    buffer[32] = min_position_buffer.data[0];
+    buffer[33] = min_position_buffer.data[1];
+    buffer[34] = min_position_buffer.data[2];
+    buffer[35] = min_position_buffer.data[3];
+
+    uint8x4_t max_position_buffer =
+        float32_to_uint8x4_be(joint_parameters->max_position);
+    buffer[36] = max_position_buffer.data[0];
+    buffer[37] = max_position_buffer.data[1];
+    buffer[38] = max_position_buffer.data[2];
+    buffer[39] = max_position_buffer.data[3];
+
+    uint8x4_t min_acceleration_buffer =
+        float32_to_uint8x4_be(joint_parameters->min_acceleration);
+    buffer[40] = min_acceleration_buffer.data[0];
+    buffer[41] = min_acceleration_buffer.data[1];
+    buffer[42] = min_acceleration_buffer.data[2];
+    buffer[43] = min_acceleration_buffer.data[3];
+
+    uint8x4_t max_acceleration_buffer =
+        float32_to_uint8x4_be(joint_parameters->max_acceleration);
+    buffer[44] = max_acceleration_buffer.data[0];
+    buffer[45] = max_acceleration_buffer.data[1];
+    buffer[46] = max_acceleration_buffer.data[2];
+    buffer[47] = max_acceleration_buffer.data[3];
+
+    uint8x4_t step_change_buffer =
+        float32_to_uint8x4_be(joint_parameters->step_change);
+    buffer[48] = step_change_buffer.data[0];
+    buffer[49] = step_change_buffer.data[1];
+    buffer[50] = step_change_buffer.data[2];
+    buffer[51] = step_change_buffer.data[3];
+
+    uint8x4_t current_limit_buffer =
+        float32_to_uint8x4_be(joint_parameters->current_limit);
+    buffer[52] = current_limit_buffer.data[0];
+    buffer[53] = current_limit_buffer.data[1];
+    buffer[54] = current_limit_buffer.data[2];
+    buffer[55] = current_limit_buffer.data[3];
+
+    buffer[56] = joint_parameters->magnet_polarity;
+}
+
 static inline void atlas_joint_packet_payload_encode(
     atlas_joint_packet_type_t type,
     atlas_joint_packet_payload_t const* payload,
@@ -357,9 +453,18 @@ static inline void atlas_joint_packet_payload_encode(
             atlas_joint_packet_payload_joint_stop_encode(&payload->joint_stop,
                                                          buffer);
         } break;
+        case ATLAS_JOINT_PACKET_TYPE_JOINT_RESET: {
+            atlas_joint_packet_payload_joint_reset_encode(&payload->joint_reset,
+                                                          buffer);
+        } break;
         case ATLAS_JOINT_PACKET_TYPE_JOINT_REFERENCE: {
             atlas_joint_packet_payload_joint_reference_encode(
                 &payload->joint_reference,
+                buffer);
+        } break;
+        case ATLAS_JOINT_PACKET_TYPE_JOINT_PARAMETERS: {
+            atlas_joint_packet_payload_joint_parameters_encode(
+                &payload->joint_parameters,
                 buffer);
         } break;
         default: {
@@ -375,6 +480,11 @@ static inline void atlas_joint_packet_payload_joint_start_decode(
 static inline void atlas_joint_packet_payload_joint_stop_decode(
     uint8_t const* buffer,
     atlas_joint_packet_payload_joint_stop_t* joint_stop)
+{}
+
+static inline void atlas_joint_packet_payload_joint_reset_decode(
+    uint8_t const* buffer,
+    atlas_joint_packet_payload_joint_reset_t* joint_reset)
 {}
 
 static inline void atlas_joint_packet_payload_joint_reference_decode(
@@ -396,6 +506,115 @@ static inline void atlas_joint_packet_payload_joint_reference_decode(
     joint_reference->delta_time = uint8x4_be_to_float32(delta_time_buffer);
 }
 
+static inline void atlas_joint_packet_payload_joint_parameters_decode(
+    uint8_t const* buffer,
+    atlas_joint_packet_payload_joint_parameters_t* joint_parameters)
+{
+    uint8x4_t prop_gain_buffer;
+    prop_gain_buffer.data[0] = buffer[0];
+    prop_gain_buffer.data[1] = buffer[1];
+    prop_gain_buffer.data[2] = buffer[2];
+    prop_gain_buffer.data[3] = buffer[3];
+    joint_parameters->prop_gain = uint8x4_be_to_float32(prop_gain_buffer);
+
+    uint8x4_t int_gain_buffer;
+    int_gain_buffer.data[0] = buffer[4];
+    int_gain_buffer.data[1] = buffer[5];
+    int_gain_buffer.data[2] = buffer[6];
+    int_gain_buffer.data[3] = buffer[7];
+    joint_parameters->int_gain = uint8x4_be_to_float32(int_gain_buffer);
+
+    uint8x4_t dot_gain_buffer;
+    dot_gain_buffer.data[0] = buffer[8];
+    dot_gain_buffer.data[1] = buffer[9];
+    dot_gain_buffer.data[2] = buffer[10];
+    dot_gain_buffer.data[3] = buffer[11];
+    joint_parameters->dot_gain = uint8x4_be_to_float32(dot_gain_buffer);
+
+    uint8x4_t sat_gain_buffer;
+    sat_gain_buffer.data[0] = buffer[12];
+    sat_gain_buffer.data[1] = buffer[13];
+    sat_gain_buffer.data[2] = buffer[14];
+    sat_gain_buffer.data[3] = buffer[15];
+    joint_parameters->sat_gain = uint8x4_be_to_float32(sat_gain_buffer);
+
+    uint8x4_t dead_error_buffer;
+    dead_error_buffer.data[0] = buffer[16];
+    dead_error_buffer.data[1] = buffer[17];
+    dead_error_buffer.data[2] = buffer[18];
+    dead_error_buffer.data[3] = buffer[19];
+    joint_parameters->dead_error = uint8x4_be_to_float32(dead_error_buffer);
+
+    uint8x4_t min_speed_buffer;
+    min_speed_buffer.data[0] = buffer[20];
+    min_speed_buffer.data[1] = buffer[21];
+    min_speed_buffer.data[2] = buffer[22];
+    min_speed_buffer.data[3] = buffer[23];
+    joint_parameters->min_speed = uint8x4_be_to_float32(min_speed_buffer);
+
+    uint8x4_t max_speed_buffer;
+    max_speed_buffer.data[0] = buffer[24];
+    max_speed_buffer.data[1] = buffer[25];
+    max_speed_buffer.data[2] = buffer[26];
+    max_speed_buffer.data[3] = buffer[27];
+    joint_parameters->max_speed = uint8x4_be_to_float32(max_speed_buffer);
+
+    uint8x4_t home_position_buffer;
+    home_position_buffer.data[0] = buffer[28];
+    home_position_buffer.data[1] = buffer[29];
+    home_position_buffer.data[2] = buffer[30];
+    home_position_buffer.data[3] = buffer[31];
+    joint_parameters->home_position =
+        uint8x4_be_to_float32(home_position_buffer);
+
+    uint8x4_t min_position_buffer;
+    min_position_buffer.data[0] = buffer[32];
+    min_position_buffer.data[1] = buffer[33];
+    min_position_buffer.data[2] = buffer[34];
+    min_position_buffer.data[3] = buffer[35];
+    joint_parameters->min_position = uint8x4_be_to_float32(min_position_buffer);
+
+    uint8x4_t max_position_buffer;
+    max_position_buffer.data[0] = buffer[36];
+    max_position_buffer.data[1] = buffer[37];
+    max_position_buffer.data[2] = buffer[38];
+    max_position_buffer.data[3] = buffer[39];
+    joint_parameters->max_position = uint8x4_be_to_float32(max_position_buffer);
+
+    uint8x4_t min_acceleration_buffer;
+    min_acceleration_buffer.data[0] = buffer[40];
+    min_acceleration_buffer.data[1] = buffer[41];
+    min_acceleration_buffer.data[2] = buffer[42];
+    min_acceleration_buffer.data[3] = buffer[43];
+    joint_parameters->min_acceleration =
+        uint8x4_be_to_float32(min_acceleration_buffer);
+
+    uint8x4_t max_acceleration_buffer;
+    max_acceleration_buffer.data[0] = buffer[44];
+    max_acceleration_buffer.data[1] = buffer[45];
+    max_acceleration_buffer.data[2] = buffer[46];
+    max_acceleration_buffer.data[3] = buffer[47];
+    joint_parameters->max_acceleration =
+        uint8x4_be_to_float32(max_acceleration_buffer);
+
+    uint8x4_t step_change_buffer;
+    step_change_buffer.data[0] = buffer[48];
+    step_change_buffer.data[1] = buffer[49];
+    step_change_buffer.data[2] = buffer[50];
+    step_change_buffer.data[3] = buffer[51];
+    joint_parameters->step_change = uint8x4_be_to_float32(step_change_buffer);
+
+    uint8x4_t current_limit_buffer;
+    current_limit_buffer.data[0] = buffer[52];
+    current_limit_buffer.data[1] = buffer[53];
+    current_limit_buffer.data[2] = buffer[54];
+    current_limit_buffer.data[3] = buffer[55];
+    joint_parameters->current_limit =
+        uint8x4_be_to_float32(current_limit_buffer);
+
+    joint_parameters->magnet_polarity = buffer[56];
+}
+
 static inline void atlas_joint_packet_payload_decode(
     uint8_t const* buffer,
     atlas_joint_packet_type_t type,
@@ -411,10 +630,20 @@ static inline void atlas_joint_packet_payload_decode(
             atlas_joint_packet_payload_joint_stop_decode(buffer,
                                                          &payload->joint_stop);
         } break;
+        case ATLAS_JOINT_PACKET_TYPE_JOINT_RESET: {
+            atlas_joint_packet_payload_joint_reset_decode(
+                buffer,
+                &payload->joint_reset);
+        } break;
         case ATLAS_JOINT_PACKET_TYPE_JOINT_REFERENCE: {
             atlas_joint_packet_payload_joint_reference_decode(
                 buffer,
                 &payload->joint_reference);
+        } break;
+        case ATLAS_JOINT_PACKET_TYPE_JOINT_PARAMETERS: {
+            atlas_joint_packet_payload_joint_parameters_decode(
+                buffer,
+                &payload->joint_parameters);
         } break;
         default: {
         } break;
