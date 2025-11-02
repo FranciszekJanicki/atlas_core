@@ -3,7 +3,6 @@
 #include "allocator.h"
 #include "atlas_utility.h"
 #include "stream_buffer.h"
-#include "usart.h"
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
@@ -53,7 +52,7 @@ void atlas_log(char const* format, ...)
         return;
     }
 
-    _write(0, buffer, strlen(buffer));
+    _write(1, buffer, strlen(buffer));
 
     if (used_heap_buffer) {
         vPortFree(buffer);
