@@ -29,8 +29,7 @@
 
 #ifdef DEBUG
 
-#define ATLAS_LOG(TAG, FMT, ...) \
-    atlas_log("[%s] " FMT "\n\r", TAG, ##__VA_ARGS__)
+#define ATLAS_LOG(TAG, FMT, ...) atlas_log("[%s] " FMT, TAG, ##__VA_ARGS__)
 
 #define ATLAS_LOG_FUNC(TAG) ATLAS_LOG(TAG, "%s", __func__)
 

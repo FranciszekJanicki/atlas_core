@@ -5,58 +5,75 @@
 #include "stream_buffer.h"
 #include <assert.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 extern int _write(int file, char* ptr, int len);
 
-#define STATIC_BUFFER_SIZE (1000U)
+#define STATIC_BUFFER_LEN (1000U)
 
 void atlas_log(char const* format, ...)
 {
     ATLAS_ASSERT(format != NULL);
 
+    taskENTER_CRITICAL();
+
     va_list args;
 
     va_start(args, format);
-    size_t needed_size = vsnprintf(NULL, 0UL, format, args) + 1UL;
+    int needed_len = vsnprintf(NULL, 0UL, format, args) + 2;
     va_end(args);
 
-    char* buffer;
-    size_t buffer_size;
-    bool used_heap_buffer;
+    static char static_buffer[STATIC_BUFFER_LEN];
 
-    if (needed_size <= STATIC_BUFFER_SIZE) {
-        static char static_buffer[STATIC_BUFFER_SIZE];
+    char* buffer = static_buffer;
+    size_t buffer_len = sizeof(static_buffer);
+    bool used_heap_buffer = false;
 
-        buffer = static_buffer;
-        buffer_size = sizeof(static_buffer);
-        used_heap_buffer = false;
-    } else {
-        char* heap_buffer = pvPortMalloc(needed_size);
-        if (!heap_buffer) {
+    if (needed_len > STATIC_BUFFER_LEN) {
+        buffer = pvPortMalloc(needed_len);
+        if (buffer == NULL) {
+            taskEXIT_CRITICAL();
             return;
         }
-
-        buffer = heap_buffer;
-        buffer_size = needed_size;
+        buffer_len = (size_t)needed_len;
         used_heap_buffer = true;
     }
 
+    memset(buffer, 0, buffer_len);
+
     va_start(args, format);
-    size_t written_size = vsnprintf(buffer, buffer_size, format, args);
+    int written_len = vsnprintf(buffer, buffer_len, format, args);
     va_end(args);
 
-    if (written_size != needed_size - 1UL) {
+    if (written_len < 0 || written_len != needed_len - 2) {
+        if (used_heap_buffer) {
+            vPortFree(buffer);
+        }
+
+        taskEXIT_CRITICAL();
         return;
     }
 
-    _write(1, buffer, strlen(buffer));
+    buffer[written_len] = '\0';
+
+    if (strncmp(buffer + written_len - 2,
+                "\n\r",
+                buffer_len - written_len + 2) != 0) {
+        if (strncat(buffer, "\n\r", buffer_len - written_len + 2)) {
+            written_len += 2;
+        }
+    }
+
+    _write(1, buffer, written_len);
 
     if (used_heap_buffer) {
         vPortFree(buffer);
     }
+
+    taskEXIT_CRITICAL();
 }
 
-#undef STATIC_BUFFER_SIZE
+#undef STATIC_BUFFER_LEN
