@@ -19,6 +19,8 @@ typedef char atlas_sd_mount_point_t[ATLAS_SD_MOUNT_POINT_MAXLEN];
 typedef enum {
     ATLAS_SD_COMMAND_TYPE_MOUNT_CARD,
     ATLAS_SD_COMMAND_TYPE_UNMOUNT_CARD,
+    ATLAS_SD_COMMAND_TYPE_LIST_DIR,
+    ATLAS_SD_COMMAND_TYPE_CAT_FILE,
     ATLAS_SD_COMMAND_TYPE_SAVE_PATH,
     ATLAS_SD_COMMAND_TYPE_LOAD_PATH,
     ATLAS_SD_COMMAND_TYPE_REMOVE_PATH,
@@ -31,6 +33,14 @@ typedef struct {
 typedef struct {
     atlas_sd_mount_point_t mount_point;
 } atlas_sd_command_payload_unmount_card_t;
+
+typedef struct {
+    atlas_sd_path_t sd_path;
+} atlas_sd_command_payload_list_dir_t;
+
+typedef struct {
+    atlas_sd_path_t sd_path;
+} atlas_sd_command_payload_cat_file_t;
 
 typedef struct {
     atlas_sd_path_t sd_path;
@@ -48,6 +58,8 @@ typedef struct {
 typedef union {
     atlas_sd_command_payload_mount_card_t mount_card;
     atlas_sd_command_payload_unmount_card_t unmount_card;
+    atlas_sd_command_payload_list_dir_t list_dir;
+    atlas_sd_command_payload_cat_file_t cat_file;
     atlas_sd_command_payload_save_path_t save_path;
     atlas_sd_command_payload_load_path_t load_path;
     atlas_sd_command_payload_remove_path_t remove_path;
@@ -61,6 +73,8 @@ typedef struct {
 typedef enum {
     ATLAS_SD_RESPONSE_TYPE_CARD_MOUNTED,
     ATLAS_SD_RESPONSE_TYPE_CARD_UNMOUNTED,
+    ATLAS_SD_RESPONSE_TYPE_DIR_LISTED,
+    ATLAS_SD_RESPONSE_TYPE_FILE_CAT,
     ATLAS_SD_RESPONSE_TYPE_PATH_SAVED,
     ATLAS_SD_RESPONSE_TYPE_PATH_LOADED,
     ATLAS_SD_RESPONSE_TYPE_PATH_REMOVED,
@@ -76,6 +90,14 @@ typedef struct {
 
 typedef struct {
     bool success;
+} atlas_sd_response_payload_dir_listed_t;
+
+typedef struct {
+    bool success;
+} atlas_sd_response_payload_file_cat_t;
+
+typedef struct {
+    bool success;
 } atlas_sd_response_payload_path_saved_t;
 
 typedef struct {
@@ -88,8 +110,10 @@ typedef struct {
 } atlas_sd_response_payload_path_removed_t;
 
 typedef union {
-    atlas_sd_response_payload_card_unmounted_t card_mounted;
+    atlas_sd_response_payload_card_mounted_t card_mounted;
     atlas_sd_response_payload_card_unmounted_t card_unmounted;
+    atlas_sd_response_payload_dir_listed_t dir_listed;
+    atlas_sd_response_payload_file_cat_t file_cat;
     atlas_sd_response_payload_path_saved_t path_saved;
     atlas_sd_response_payload_path_loaded_t path_loaded;
     atlas_sd_response_payload_path_removed_t path_removed;
