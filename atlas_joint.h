@@ -2,6 +2,7 @@
 #define ATLAS_CORE_ATLAS_JOINT_H
 
 #include "atlas_types.h"
+#include <stdint.h>
 
 typedef enum {
     ATLAS_JOINT_NUM_1,
@@ -42,13 +43,18 @@ typedef struct {
     float32_t dead_error;
     float32_t min_speed;
     float32_t max_speed;
-    float32_t home_position;
+
+    float32_t reset_position;
     float32_t min_position;
     float32_t max_position;
     float32_t min_acceleration;
     float32_t max_acceleration;
+
     float32_t step_change;
+    int32_t microstep;
+
     float32_t current_limit;
+
     bool magnet_polarity;
 } atlas_joint_parameters_t;
 
@@ -60,6 +66,9 @@ typedef struct {
 
 typedef struct {
 } atlas_joint_stopped_t;
+
+typedef struct {
+} atlas_joint_resetted_t;
 
 typedef struct {
     char message[10];

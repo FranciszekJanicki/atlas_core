@@ -10,6 +10,7 @@ typedef enum {
     ATLAS_ROBOT_PACKET_TYPE_JOINT_READY,
     ATLAS_ROBOT_PACKET_TYPE_JOINT_STARTED,
     ATLAS_ROBOT_PACKET_TYPE_JOINT_STOPPED,
+    ATLAS_ROBOT_PACKET_TYPE_JOINT_RESETTED,
     ATLAS_ROBOT_PACKET_TYPE_JOINT_FAULT,
     ATLAS_ROBOT_PACKET_TYPE_JOINT_MEASURE,
 } atlas_robot_packet_type_t;
@@ -26,6 +27,7 @@ typedef atlas_joint_num_t atlas_robot_packet_origin_t;
 typedef atlas_joint_ready_t atlas_robot_packet_payload_joint_ready_t;
 typedef atlas_joint_started_t atlas_robot_packet_payload_joint_started_t;
 typedef atlas_joint_started_t atlas_robot_packet_payload_joint_stopped_t;
+typedef atlas_joint_resetted_t atlas_robot_packet_payload_joint_resetted_t;
 typedef atlas_joint_fault_t atlas_robot_packet_payload_joint_fault_t;
 typedef atlas_joint_measure_t atlas_robot_packet_payload_joint_measure_t;
 
@@ -33,6 +35,7 @@ typedef union {
     atlas_robot_packet_payload_joint_ready_t joint_ready;
     atlas_robot_packet_payload_joint_started_t joint_started;
     atlas_robot_packet_payload_joint_stopped_t joint_stopped;
+    atlas_robot_packet_payload_joint_resetted_t joint_resetted;
     atlas_robot_packet_payload_joint_fault_t joint_fault;
     atlas_robot_packet_payload_joint_measure_t joint_measure;
 } atlas_robot_packet_payload_t;

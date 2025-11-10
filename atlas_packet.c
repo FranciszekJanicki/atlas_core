@@ -64,6 +64,11 @@ static inline void atlas_robot_packet_payload_joint_stopped_encode(
     uint8_t* buffer)
 {}
 
+static inline void atlas_robot_packet_payload_joint_resetted_encode(
+    atlas_robot_packet_payload_joint_resetted_t const* joint_resetted,
+    uint8_t* buffer)
+{}
+
 static inline void atlas_robot_packet_payload_joint_fault_encode(
     atlas_robot_packet_payload_joint_fault_t const* joint_fault,
     uint8_t* buffer)
@@ -103,6 +108,11 @@ static inline void atlas_robot_packet_payload_encode(
                 &payload->joint_stopped,
                 buffer);
         } break;
+        case ATLAS_ROBOT_PACKET_TYPE_JOINT_RESETTED: {
+            atlas_robot_packet_payload_joint_resetted_encode(
+                &payload->joint_resetted,
+                buffer);
+        } break;
         case ATLAS_ROBOT_PACKET_TYPE_JOINT_FAULT: {
             atlas_robot_packet_payload_joint_fault_encode(&payload->joint_fault,
                                                           buffer);
@@ -130,6 +140,11 @@ static inline void atlas_robot_packet_payload_joint_started_decode(
 static inline void atlas_robot_packet_payload_joint_stopped_decode(
     uint8_t const* buffer,
     atlas_robot_packet_payload_joint_stopped_t* joint_stopped)
+{}
+
+static inline void atlas_robot_packet_payload_joint_resetted_decode(
+    uint8_t const* buffer,
+    atlas_robot_packet_payload_joint_resetted_t* joint_resetted)
 {}
 
 static inline void atlas_robot_packet_payload_joint_fault_decode(
@@ -181,6 +196,11 @@ static inline void atlas_robot_packet_payload_decode(
             atlas_robot_packet_payload_joint_stopped_decode(
                 buffer,
                 &payload->joint_stopped);
+        } break;
+        case ATLAS_ROBOT_PACKET_TYPE_JOINT_RESETTED: {
+            atlas_robot_packet_payload_joint_resetted_decode(
+                buffer,
+                &payload->joint_resetted);
         } break;
         case ATLAS_ROBOT_PACKET_TYPE_JOINT_FAULT: {
             atlas_robot_packet_payload_joint_fault_decode(
@@ -387,12 +407,12 @@ static inline void atlas_joint_packet_payload_joint_parameters_encode(
     buffer[26] = max_speed_buffer.data[2];
     buffer[27] = max_speed_buffer.data[3];
 
-    uint8x4_t home_position_buffer =
-        float32_to_uint8x4_be(joint_parameters->home_position);
-    buffer[28] = home_position_buffer.data[0];
-    buffer[29] = home_position_buffer.data[1];
-    buffer[30] = home_position_buffer.data[2];
-    buffer[31] = home_position_buffer.data[3];
+    uint8x4_t reset_position_buffer =
+        float32_to_uint8x4_be(joint_parameters->reset_position);
+    buffer[28] = reset_position_buffer.data[0];
+    buffer[29] = reset_position_buffer.data[1];
+    buffer[30] = reset_position_buffer.data[2];
+    buffer[31] = reset_position_buffer.data[3];
 
     uint8x4_t min_position_buffer =
         float32_to_uint8x4_be(joint_parameters->min_position);
@@ -559,13 +579,13 @@ static inline void atlas_joint_packet_payload_joint_parameters_decode(
     max_speed_buffer.data[3] = buffer[27];
     joint_parameters->max_speed = uint8x4_be_to_float32(max_speed_buffer);
 
-    uint8x4_t home_position_buffer;
-    home_position_buffer.data[0] = buffer[28];
-    home_position_buffer.data[1] = buffer[29];
-    home_position_buffer.data[2] = buffer[30];
-    home_position_buffer.data[3] = buffer[31];
-    joint_parameters->home_position =
-        uint8x4_be_to_float32(home_position_buffer);
+    uint8x4_t reset_position_buffer;
+    reset_position_buffer.data[0] = buffer[28];
+    reset_position_buffer.data[1] = buffer[29];
+    reset_position_buffer.data[2] = buffer[30];
+    reset_position_buffer.data[3] = buffer[31];
+    joint_parameters->reset_position =
+        uint8x4_be_to_float32(reset_position_buffer);
 
     uint8x4_t min_position_buffer;
     min_position_buffer.data[0] = buffer[32];
@@ -811,14 +831,17 @@ void atlas_joint_packet_decode_with_checksum(
 static inline void atlas_robot_packet_type_print(atlas_robot_packet_type_t type)
 {
     switch (type) {
+        case ATLAS_ROBOT_PACKET_TYPE_JOINT_READY: {
+            atlas_log("Robot packet type: JOINT_READY\n\r");
+        } break;
         case ATLAS_ROBOT_PACKET_TYPE_JOINT_STARTED: {
             atlas_log("Robot packet type: JOINT_STARTED\n\r");
         } break;
         case ATLAS_ROBOT_PACKET_TYPE_JOINT_STOPPED: {
             atlas_log("Robot packet type: JOINT_STOPPED\n\r");
         } break;
-        case ATLAS_ROBOT_PACKET_TYPE_JOINT_READY: {
-            atlas_log("Robot packet type: JOINT_READY\n\r");
+        case ATLAS_ROBOT_PACKET_TYPE_JOINT_RESETTED: {
+            atlas_log("Robot packet type: JOINT_RESETTED\n\r");
         } break;
         case ATLAS_ROBOT_PACKET_TYPE_JOINT_FAULT: {
             atlas_log("Robot packet type: JOINT_FAULT\n\r");
@@ -842,13 +865,16 @@ static void atlas_robot_packet_payload_print(
     atlas_robot_packet_payload_t const* payload)
 {
     switch (type) {
+        case ATLAS_ROBOT_PACKET_TYPE_JOINT_READY: {
+            atlas_log("Robot packet payload: <empty>\n\r");
+        } break;
         case ATLAS_ROBOT_PACKET_TYPE_JOINT_STARTED: {
             atlas_log("Robot packet payload: <empty>\n\r");
         } break;
         case ATLAS_ROBOT_PACKET_TYPE_JOINT_STOPPED: {
             atlas_log("Robot packet payload: <empty>\n\r");
         } break;
-        case ATLAS_ROBOT_PACKET_TYPE_JOINT_READY: {
+        case ATLAS_ROBOT_PACKET_TYPE_JOINT_RESETTED: {
             atlas_log("Robot packet payload: <empty>\n\r");
         } break;
         case ATLAS_ROBOT_PACKET_TYPE_JOINT_FAULT: {
