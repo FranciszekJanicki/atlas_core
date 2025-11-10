@@ -18,6 +18,8 @@ void atlas_checksum_encode(atlas_checksum_t const* checksum,
 void atlas_checksum_decode(const uint8_t (*buffer)[ATLAS_CHECKSUM_SIZE],
                            atlas_checksum_t* checksum);
 
-void atlas_checksum_print(atlas_checksum_t const* checksum);
+void atlas_checksum_to_string(atlas_checksum_t const* checksum,
+                              char* buffer,
+                              size_t buffer_len);
 
 #endif // ATLAS_CORE_ATLAS_CHECKSUM_H

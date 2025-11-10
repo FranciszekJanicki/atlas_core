@@ -43,9 +43,14 @@ void atlas_checksum_decode(const uint8_t (*buffer)[ATLAS_CHECKSUM_SIZE],
     *checksum = uint8x4_be_to_uint32(checksum_buffer);
 }
 
-void atlas_checksum_print(atlas_checksum_t const* checksum)
+void atlas_checksum_to_string(atlas_checksum_t const* checksum,
+                              char* buffer,
+                              size_t buffer_len)
 {
     ATLAS_ASSERT(checksum != NULL);
+    ATLAS_ASSERT(buffer != NULL);
+    ATLAS_ASSERT(buffer_len > 0UL);
 
-    atlas_log("Checksum: %u\n\r", *checksum);
+    int written_len = snprintf(buffer, buffer_len - 1UL, "%u", *checksum);
+    buffer[written_len] = '\0';
 }

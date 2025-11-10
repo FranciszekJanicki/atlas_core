@@ -3,87 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void atlas_timestamp_print(atlas_timestamp_t const* timestamp)
-{
-    ATLAS_ASSERT(timestamp != NULL);
-
-    atlas_log("timestamp: %u-%u-%u %u:%u:%u [DD-MM-YYYY HH:MM:SS]\n\r",
-              timestamp->day,
-              timestamp->month,
-              timestamp->year,
-              timestamp->hour,
-              timestamp->minute,
-              timestamp->second);
-}
-
-bool atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
-                               char** string,
-                               size_t* string_size,
-                               bool* is_heap_string)
-{
-    ATLAS_ASSERT(timestamp != NULL);
-    ATLAS_ASSERT(string != NULL);
-    ATLAS_ASSERT(string_size != NULL);
-    ATLAS_ASSERT(is_heap_string != NULL);
-
-    if (timestamp->hour >= 24U || timestamp->minute >= 60U ||
-        timestamp->second >= 60U) {
-        return false;
-    }
-
-    size_t needed_size = snprintf(NULL,
-                                  0UL,
-                                  "%u-%u-%u %u:%u:%u",
-                                  timestamp->day,
-                                  timestamp->month,
-                                  timestamp->year,
-                                  timestamp->hour,
-                                  timestamp->minute,
-                                  timestamp->second) +
-                         1UL;
-
-    char* buffer;
-    size_t buffer_size;
-    bool used_heap_buffer;
-
-    if (needed_size <= 100UL) {
-        static char static_buffer[100UL];
-
-        buffer = static_buffer;
-        buffer_size = sizeof(static_buffer);
-        used_heap_buffer = false;
-    } else {
-        char* heap_buffer = pvPortMalloc(needed_size);
-        if (heap_buffer == NULL) {
-            return false;
-        }
-
-        buffer = heap_buffer;
-        buffer_size = needed_size;
-        used_heap_buffer = true;
-    }
-
-    size_t written_size = snprintf(buffer,
-                                   buffer_size,
-                                   "%timestamp_format",
-                                   timestamp->day,
-                                   timestamp->month,
-                                   timestamp->year,
-                                   timestamp->hour,
-                                   timestamp->minute,
-                                   timestamp->second);
-
-    if (written_size != needed_size - 1UL) {
-        return false;
-    }
-
-    *string = buffer;
-    *string_size = buffer_size;
-    *is_heap_string = used_heap_buffer;
-
-    return true;
-}
-
 void atlas_timestamp_encode(atlas_timestamp_t const* timestamp,
                             uint8_t (*buffer)[ATLAS_TIMESTAMP_SIZE])
 {
@@ -110,4 +29,28 @@ void atlas_timestamp_decode(const uint8_t (*buffer)[ATLAS_TIMESTAMP_SIZE],
     timestamp->hour = *buffer[3];
     timestamp->minute = *buffer[4];
     timestamp->second = *buffer[5];
+}
+
+void atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
+                               char* buffer,
+                               size_t buffer_len)
+{
+    ATLAS_ASSERT(timestamp != NULL);
+    ATLAS_ASSERT(buffer != NULL);
+    ATLAS_ASSERT(buffer_len > 0UL);
+
+    ATLAS_ASSERT(timestamp->hour < 24U && timestamp->hour >= 0U);
+    ATLAS_ASSERT(timestamp->minute < 60U && timestamp->minute >= 0U);
+    ATLAS_ASSERT(timestamp->second < 60U && timestamp->second >= 0U);
+
+    int written_len = snprintf(buffer,
+                               buffer_len - 1U,
+                               "%u-%u-%u %u:%u:%u",
+                               timestamp->day,
+                               timestamp->month,
+                               timestamp->year,
+                               timestamp->hour,
+                               timestamp->minute,
+                               timestamp->second);
+    buffer[written_len] = '\0';
 }
