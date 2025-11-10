@@ -2,6 +2,8 @@
 #define ATLAS_CORE_ATLAS_JOINT_H
 
 #include "atlas_types.h"
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 typedef enum {

@@ -106,27 +106,31 @@ typedef atlas_checksum_t atlas_joint_packet_checksum_t;
 #define ATLAS_JOINT_PACKET_WITH_CHECKSUM_SIZE \
     (ATLAS_JOINT_PACKET_SIZE + ATLAS_JOINT_PACKET_CHECKSUM_SIZE)
 
-void atlas_robot_packet_encode(atlas_robot_packet_t const* packet,
-                               uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE]);
-void atlas_robot_packet_decode(const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE],
-                               atlas_robot_packet_t* packet);
+void atlas_robot_packet_encode_binary(
+    atlas_robot_packet_t const* packet,
+    uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE]);
+void atlas_robot_packet_decode_binary(
+    const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_SIZE],
+    atlas_robot_packet_t* packet);
 
-void atlas_robot_packet_encode_with_checksum(
+void atlas_robot_packet_encode_binary_with_checksum(
     atlas_robot_packet_t const* packet,
     uint8_t (*buffer)[ATLAS_ROBOT_PACKET_WITH_CHECKSUM_SIZE]);
-void atlas_robot_packet_decode_with_checksum(
+void atlas_robot_packet_decode_binary_with_checksum(
     const uint8_t (*buffer)[ATLAS_ROBOT_PACKET_WITH_CHECKSUM_SIZE],
     atlas_robot_packet_t* packet);
 
-void atlas_joint_packet_encode(atlas_joint_packet_t const* packet,
-                               uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE]);
-void atlas_joint_packet_decode(const uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE],
-                               atlas_joint_packet_t* packet);
+void atlas_joint_packet_encode_binary(
+    atlas_joint_packet_t const* packet,
+    uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE]);
+void atlas_joint_packet_decode_binary(
+    const uint8_t (*buffer)[ATLAS_JOINT_PACKET_SIZE],
+    atlas_joint_packet_t* packet);
 
-void atlas_joint_packet_encode_with_checksum(
+void atlas_joint_packet_encode_binary_with_checksum(
     atlas_joint_packet_t const* packet,
     uint8_t (*buffer)[ATLAS_JOINT_PACKET_WITH_CHECKSUM_SIZE]);
-void atlas_joint_packet_decode_with_checksum(
+void atlas_joint_packet_decode_binary_with_checksum(
     const uint8_t (*buffer)[ATLAS_JOINT_PACKET_WITH_CHECKSUM_SIZE],
     atlas_joint_packet_t* packet);
 

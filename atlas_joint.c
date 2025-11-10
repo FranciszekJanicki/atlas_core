@@ -31,7 +31,7 @@ void atlas_joint_num_encode_symbolic(atlas_joint_num_t num,
     ATLAS_ASSERT(buffer != NULL);
     ATLAS_ASSERT(buffer_len > 0UL);
 
-    int written_len = snprintf(buffer, buffer_len, "NUM: %d", num, );
+    int written_len = snprintf(buffer, buffer_len, "NUM: %d", num);
     buffer[written_len] = '\0';
 }
 
@@ -145,23 +145,6 @@ void atlas_joint_measure_decode_symbolic(char const* buffer,
            &measure->current);
 }
 
-void atlas_joint_reference_encode_symbolic(
-    atlas_joint_reference_t const* reference,
-    char* buffer,
-    size_t buffer_len)
-{
-    ATLAS_ASSERT(reference != NULL);
-    ATLAS_ASSERT(buffer != NULL);
-    ATLAS_ASSERT(buffer_len > 0UL);
-
-    int written_len = snprintf(buffer,
-                               buffer_len,
-                               "REFERENCE POSITION: %f, DELTA_TIME: %f",
-                               reference->position,
-                               reference->delta_time);
-    buffer[written_len] = '\0';
-}
-
 void atlas_joint_reference_encode_binary(
     atlas_joint_reference_t const* reference,
     uint8_t (*buffer)[ATLAS_JOINT_REFERENCE_SIZE])
@@ -203,9 +186,9 @@ void atlas_joint_reference_encode_symbolic(
 
     int written_len = snprintf(buffer,
                                buffer_len,
-                               "MEASURE POSITION: %f, CURRENT: %f",
-                               measure->position,
-                               measure->current);
+                               "REFERENCE POSITION: %f, DELTA_TIME: %f",
+                               reference->position,
+                               reference->delta_time);
     buffer[written_len] = '\0';
 }
 
@@ -217,9 +200,9 @@ void atlas_joint_reference_decode_symbolic(char const* buffer,
     ATLAS_ASSERT(reference != NULL);
 
     sscanf(buffer,
-           "MEASURE POSITION: %f, CURRENT: %f",
-           &measure->position,
-           &measure->current);
+           "REFERENCE POSITION: %f, DELTA_TIME: %f",
+           &reference->position,
+           &reference->delta_time);
 }
 
 void atlas_joint_parameters_encode_binary(
@@ -293,63 +276,65 @@ void atlas_joint_parameters_decode_binary(
 
     uint8x4_t prop_gain_buffer;
     memcpy(prop_gain_buffer.data, *buffer, 4UL);
-    parameters->prop_gain = uint8x4_be_float32(prop_gain_buffer);
+    parameters->prop_gain = uint8x4_be_to_float32(prop_gain_buffer);
 
     uint8x4_t int_gain_buffer;
     memcpy(int_gain_buffer.data, *buffer + 4UL, 4UL);
-    parameters->int_gain = uint8x4_be_float32(int_gain_buffer);
+    parameters->int_gain = uint8x4_be_to_float32(int_gain_buffer);
 
     uint8x4_t dot_gain_buffer;
     memcpy(dot_gain_buffer.data, *buffer + 8UL, 4UL);
-    parameters->dot_gain = uint8x4_be_float32(dot_gain_buffer);
+    parameters->dot_gain = uint8x4_be_to_float32(dot_gain_buffer);
 
     uint8x4_t sat_gain_buffer;
     memcpy(sat_gain_buffer.data, *buffer + 12UL, 4UL);
-    parameters->sat_gain = uint8x4_be_float32(sat_gain_buffer);
+    parameters->sat_gain = uint8x4_be_to_float32(sat_gain_buffer);
 
     uint8x4_t dead_error_buffer;
     memcpy(dead_error_buffer.data, *buffer + 16UL, 4UL);
-    parameters->dead_error = uint8x4_be_float32(dead_error_buffer);
+    parameters->dead_error = uint8x4_be_to_float32(dead_error_buffer);
 
     uint8x4_t min_position_buffer;
     memcpy(min_position_buffer.data, *buffer + 20UL, 4UL);
-    parameters->min_position = uint8x4_be_float32(min_position_buffer);
+    parameters->min_position = uint8x4_be_to_float32(min_position_buffer);
 
     uint8x4_t max_position_buffer;
     memcpy(max_position_buffer.data, *buffer + 24UL, 4UL);
-    parameters->max_position = uint8x4_be_float32(max_position_buffer);
+    parameters->max_position = uint8x4_be_to_float32(max_position_buffer);
 
     uint8x4_t min_speed_buffer;
     memcpy(min_speed_buffer.data, *buffer + 28UL, 4UL);
-    parameters->min_speed = uint8x4_be_float32(min_speed_buffer);
+    parameters->min_speed = uint8x4_be_to_float32(min_speed_buffer);
 
     uint8x4_t max_speed_buffer;
     memcpy(max_speed_buffer.data, *buffer + 32UL, 4UL);
-    parameters->max_speed = uint8x4_be_float32(max_speed_buffer);
+    parameters->max_speed = uint8x4_be_to_float32(max_speed_buffer);
 
     uint8x4_t min_acceleration_buffer;
     memcpy(min_acceleration_buffer.data, *buffer + 36UL, 4UL);
-    parameters->min_acceleration = uint8x4_be_float32(min_acceleration_buffer);
+    parameters->min_acceleration =
+        uint8x4_be_to_float32(min_acceleration_buffer);
 
     uint8x4_t max_acceleration_buffer;
     memcpy(max_acceleration_buffer.data, *buffer + 40UL, 4UL);
-    parameters->max_acceleration = uint8x4_be_float32(max_acceleration_buffer);
+    parameters->max_acceleration =
+        uint8x4_be_to_float32(max_acceleration_buffer);
 
     uint8x4_t reset_position_buffer;
     memcpy(reset_position_buffer.data, *buffer + 44UL, 4UL);
-    parameters->reset_position = uint8x4_be_float32(reset_position_buffer);
+    parameters->reset_position = uint8x4_be_to_float32(reset_position_buffer);
 
     uint8x4_t step_change_buffer;
     memcpy(step_change_buffer.data, *buffer + 48UL, 4UL);
-    parameters->step_change = uint8x4_be_float32(step_change_buffer);
+    parameters->step_change = uint8x4_be_to_float32(step_change_buffer);
 
     uint8x4_t microstep_buffer;
     memcpy(microstep_buffer.data, *buffer + 52UL, 4UL);
-    parameters->microstep = uint8x4_be_float32(microstep_buffer);
+    parameters->microstep = uint8x4_be_to_float32(microstep_buffer);
 
     uint8x4_t current_limit_buffer;
     memcpy(current_limit_buffer.data, *buffer + 56UL, 4UL);
-    parameters->current_limit = uint8x4_be_float32(current_limit_buffer);
+    parameters->current_limit = uint8x4_be_to_float32(current_limit_buffer);
 
     memcpy(&parameters->magnet_polarity, *buffer + 60UL, 1UL);
 }

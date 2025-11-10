@@ -2,9 +2,10 @@
 #include "atlas_utility.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-void atlas_timestamp_encode(atlas_timestamp_t const* timestamp,
-                            uint8_t (*buffer)[ATLAS_TIMESTAMP_SIZE])
+void atlas_timestamp_encode_binary(atlas_timestamp_t const* timestamp,
+                                   uint8_t (*buffer)[ATLAS_TIMESTAMP_SIZE])
 {
     ATLAS_ASSERT(buffer != NULL);
     ATLAS_ASSERT(timestamp != NULL);
@@ -17,8 +18,9 @@ void atlas_timestamp_encode(atlas_timestamp_t const* timestamp,
     *buffer[5] = timestamp->second;
 }
 
-void atlas_timestamp_decode(const uint8_t (*buffer)[ATLAS_TIMESTAMP_SIZE],
-                            atlas_timestamp_t* timestamp)
+void atlas_timestamp_decode_binary(
+    const uint8_t (*buffer)[ATLAS_TIMESTAMP_SIZE],
+    atlas_timestamp_t* timestamp)
 {
     ATLAS_ASSERT(buffer != NULL);
     ATLAS_ASSERT(timestamp != NULL);
@@ -31,9 +33,9 @@ void atlas_timestamp_decode(const uint8_t (*buffer)[ATLAS_TIMESTAMP_SIZE],
     timestamp->second = *buffer[5];
 }
 
-void atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
-                               char* buffer,
-                               size_t buffer_len)
+void atlas_timestamp_encode_symbolic(atlas_timestamp_t const* timestamp,
+                                     char* buffer,
+                                     size_t buffer_len)
 {
     ATLAS_ASSERT(timestamp != NULL);
     ATLAS_ASSERT(buffer != NULL);
@@ -53,4 +55,12 @@ void atlas_timestamp_to_string(atlas_timestamp_t const* timestamp,
                                timestamp->minute,
                                timestamp->second);
     buffer[written_len] = '\0';
+}
+
+void atlas_timestamp_decode_symbolic(char const* buffer,
+                                     atlas_timestamp_t* timestamp)
+{
+    ATLAS_ASSERT(buffer != NULL);
+    ATLAS_ASSERT(strlen(buffer) > 0UL);
+    ATLAS_ASSERT(timestamp != NULL);
 }

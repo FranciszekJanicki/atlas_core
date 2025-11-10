@@ -1,6 +1,7 @@
 #include "atlas_checksum.h"
 #include "atlas_utility.h"
 #include "utility.h"
+#include <string.h>
 
 void atlas_checksum_calculate(uint8_t const* data,
                               size_t data_size,
@@ -14,18 +15,14 @@ void atlas_checksum_calculate(uint8_t const* data,
         uint32_calculate_crc(data, data_size, 0x00, 0x00, 0x00, false, false);
 }
 
-void atlas_checksum_encode(atlas_checksum_t const* checksum,
-                           uint8_t (*buffer)[ATLAS_CHECKSUM_SIZE])
+void atlas_checksum_encode_binary(atlas_checksum_t const* checksum,
+                                  uint8_t (*buffer)[ATLAS_CHECKSUM_SIZE])
 {
     ATLAS_ASSERT(checksum != NULL);
     ATLAS_ASSERT(buffer != NULL);
 
     uint8x4_t checksum_buffer = uint32_to_uint8x4_be(*checksum);
-
-    *buffer[0] = checksum_buffer.data[0];
-    *buffer[1] = checksum_buffer.data[1];
-    *buffer[2] = checksum_buffer.data[2];
-    *buffer[3] = checksum_buffer.data[3];
+    memcpy(*buffer, checksum_buffer.data, 4UL);
 }
 
 void atlas_checksum_decode(const uint8_t (*buffer)[ATLAS_CHECKSUM_SIZE],
@@ -43,9 +40,9 @@ void atlas_checksum_decode(const uint8_t (*buffer)[ATLAS_CHECKSUM_SIZE],
     *checksum = uint8x4_be_to_uint32(checksum_buffer);
 }
 
-void atlas_checksum_to_string(atlas_checksum_t const* checksum,
-                              char* buffer,
-                              size_t buffer_len)
+void atlas_checksum_encode_symbolic(atlas_checksum_t const* checksum,
+                                    char* buffer,
+                                    size_t buffer_len)
 {
     ATLAS_ASSERT(checksum != NULL);
     ATLAS_ASSERT(buffer != NULL);
@@ -53,4 +50,12 @@ void atlas_checksum_to_string(atlas_checksum_t const* checksum,
 
     int written_len = snprintf(buffer, buffer_len - 1UL, "%u", *checksum);
     buffer[written_len] = '\0';
+}
+
+void atlas_checksum_decode_symbolic(char const* buffer,
+                                    atlas_checksum_t* checksum)
+{
+    ATLAS_ASSERT(buffer != NULL);
+    ATLAS_ASSERT(strlen(buffer) >= 0UL);
+    ATLAS_ASSERT(checksum != NULL);
 }
