@@ -37,6 +37,7 @@ typedef enum {
     ATLAS_JOINT_STATE_RUNNING,
     ATLAS_JOINT_STATE_FAULT,
     ATLAS_JOINT_STATE_IDLE,
+    ATLAS_JOINT_STATE_UNKNOWN,
 } atlas_joint_state_t;
 
 #define ATLAS_JOINT_STATE_SIZE (sizeof(atlas_joint_state_t))
@@ -207,10 +208,12 @@ typedef enum {
 
 typedef struct {
     atlas_joint_state_t state;
+    bool success;
 } atlas_joint_response_payload_get_state_t;
 
 typedef struct {
     atlas_joint_measure_t measure;
+    bool success;
 } atlas_joint_response_payload_get_measure_t;
 
 typedef struct {
