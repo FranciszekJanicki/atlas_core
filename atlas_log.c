@@ -18,26 +18,29 @@ void atlas_log(char const* format, ...)
 {
     ATLAS_ASSERT(format != NULL);
 
-    taskENTER_CRITICAL();
-
     va_list args;
-
     va_start(args, format);
     int needed_len = vsnprintf(NULL, 0UL, format, args) + 2;
     va_end(args);
 
-    static char static_buffer[STATIC_BUFFER_LEN];
+    char* buffer;
+    size_t buffer_len;
+    bool used_heap_buffer;
 
-    char* buffer = static_buffer;
-    size_t buffer_len = sizeof(static_buffer);
-    bool used_heap_buffer = false;
+    if (needed_len <= STATIC_BUFFER_LEN) {
+        static char static_buffer[STATIC_BUFFER_LEN];
+        taskENTER_CRITICAL();
 
-    if (needed_len > STATIC_BUFFER_LEN) {
-        buffer = pvPortMalloc(needed_len);
-        if (buffer == NULL) {
-            taskEXIT_CRITICAL();
+        buffer = static_buffer;
+        buffer_len = STATIC_BUFFER_LEN;
+        used_heap_buffer = false;
+    } else {
+        char* heap_buffer = pvPortMalloc(needed_len);
+        if (heap_buffer == NULL) {
             return;
         }
+
+        buffer = heap_buffer;
         buffer_len = (size_t)needed_len;
         used_heap_buffer = true;
     }
@@ -51,9 +54,10 @@ void atlas_log(char const* format, ...)
     if (written_len < 0 || written_len != needed_len - 2) {
         if (used_heap_buffer) {
             vPortFree(buffer);
+        } else {
+            taskEXIT_CRITICAL();
         }
 
-        taskEXIT_CRITICAL();
         return;
     }
 
@@ -71,9 +75,9 @@ void atlas_log(char const* format, ...)
 
     if (used_heap_buffer) {
         vPortFree(buffer);
+    } else {
+        taskEXIT_CRITICAL();
     }
-
-    taskEXIT_CRITICAL();
 }
 
 #undef STATIC_BUFFER_LEN

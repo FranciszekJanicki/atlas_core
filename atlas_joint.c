@@ -428,12 +428,101 @@ bool atlas_joint_measure_is_equal(atlas_joint_measure_t const* measure1,
            measure1->position == measure2->position;
 }
 
+static inline void atlas_joint_command_type_encode_binary(
+    atlas_joint_command_type_t type,
+    uint8_t* buffer)
+{
+    uint8x4_t type_buffer = uint32_to_uint8x4_be(type);
+    memcpy(buffer, type_buffer.data, 4UL);
+}
+
+static inline void atlas_joint_command_payload_get_state_encode_binary(
+    atlas_joint_command_payload_get_state_t const* get_state,
+    uint8_t* buffer)
+{}
+
+static inline void atlas_joint_command_payload_get_measure_encode_binary(
+    atlas_joint_command_payload_get_measure_t const* get_measure,
+    uint8_t* buffer)
+{}
+
+static inline void atlas_joint_command_payload_set_reference_encode_binary(
+    atlas_joint_command_payload_set_reference_t const* set_reference,
+    uint8_t* buffer)
+{
+    atlas_joint_reference_encode_binary(
+        &set_reference->reference,
+        (uint8_t (*)[ATLAS_JOINT_REFERENCE_SIZE])buffer);
+}
+
+static inline void atlas_joint_command_payload_set_state_encode_binary(
+    atlas_joint_command_payload_set_state_t const* set_state,
+    uint8_t* buffer)
+{
+    atlas_joint_state_encode_binary(
+        set_state->state,
+        (uint8_t (*)[ATLAS_JOINT_STATE_SIZE])buffer);
+}
+
+static inline void atlas_joint_command_payload_set_parameters_encode_binary(
+    atlas_joint_command_payload_set_parameters_t const* set_parameters,
+    uint8_t* buffer)
+{
+    atlas_joint_parameters_encode_binary(
+        &set_parameters->parameters,
+        (uint8_t (*)[ATLAS_JOINT_PARAMETERS_SIZE])buffer);
+}
+
+static inline void atlas_joint_command_payload_encode_binary(
+    atlas_joint_command_type_t type,
+    atlas_joint_command_payload_t const* payload,
+    uint8_t* buffer)
+{
+    switch (type) {
+        case ATLAS_JOINT_COMMAND_TYPE_GET_STATE: {
+            atlas_joint_command_payload_get_state_encode_binary(
+                &payload->get_state,
+                buffer);
+        } break;
+        case ATLAS_JOINT_COMMAND_TYPE_GET_MEASURE: {
+            atlas_joint_command_payload_get_measure_encode_binary(
+                &payload->get_measure,
+                buffer);
+        } break;
+        case ATLAS_JOINT_COMMAND_TYPE_SET_STATE: {
+            atlas_joint_command_payload_set_state_encode_binary(
+                &payload->set_state,
+                buffer);
+        } break;
+        case ATLAS_JOINT_COMMAND_TYPE_SET_REFERENCE: {
+            atlas_joint_command_payload_set_reference_encode_binary(
+                &payload->set_reference,
+                buffer);
+        } break;
+        case ATLAS_JOINT_COMMAND_TYPE_SET_PARAMETERS: {
+            atlas_joint_command_payload_set_parameters_encode_binary(
+                &payload->set_parameters,
+                buffer);
+        } break;
+        default: {
+        } break;
+    }
+}
+
 void atlas_joint_command_encode_binary(
     atlas_joint_command_t const* command,
     uint8_t (*buffer)[ATLAS_JOINT_COMMAND_SIZE])
 {
     ATLAS_ASSERT(command != NULL);
     ATLAS_ASSERT(buffer != NULL);
+
+    uint8_t* type_buffer = *buffer + ATLAS_JOINT_COMMAND_TYPE_OFFSET;
+    atlas_joint_command_type_encode_binary(command->type, type_buffer);
+
+    uint8_t* payload_buffer = *buffer + ATLAS_JOINT_COMMAND_PAYLOAD_OFFSET;
+    atlas_joint_command_payload_encode_binary(command->type,
+                                              &command->payload,
+                                              payload_buffer);
 }
 
 void atlas_joint_command_decode_binary(
