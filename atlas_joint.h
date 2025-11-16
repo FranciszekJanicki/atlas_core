@@ -154,7 +154,7 @@ typedef enum {
     ATLAS_JOINT_COMMAND_TYPE_SET_PARAMETERS,
 } atlas_joint_command_type_t;
 
-#define ATLAS_JOINT_COMMAND_TYPE_OFFSET (0U)
+#define ATLAS_JOINT_COMMAND_TYPE_OFFSET (0UL)
 #define ATLAS_JOINT_COMMAND_TYPE_SIZE (sizeof(atlas_joint_command_type_t))
 
 typedef struct {
@@ -196,6 +196,14 @@ typedef struct {
     (ATLAS_JOINT_COMMAND_TYPE_SIZE + ATLAS_JOINT_COMMAND_PAYLOAD_SIZE)
 
 typedef enum {
+    ATLAS_JOINT_RESPONSE_RESULT_SUCCESS,
+    ATLAS_JOINT_RESPONSE_RESULT_FAILURE,
+} atlas_joint_response_result_t;
+
+#define ATLAS_JOINT_RESPONSE_RESULT_OFFSET (0UL)
+#define ATLAS_JOINT_RESPONSE_RESULT_SIZE (sizeof(atlas_joint_response_result_t))
+
+typedef enum {
     ATLAS_JOINT_RESPONSE_TYPE_GET_STATE,
     ATLAS_JOINT_RESPONSE_TYPE_GET_MEASURE,
     ATLAS_JOINT_RESPONSE_TYPE_SET_STATE,
@@ -203,29 +211,25 @@ typedef enum {
     ATLAS_JOINT_RESPONSE_TYPE_SET_PARAMETERS,
 } atlas_joint_response_type_t;
 
-#define ATLAS_JOINT_RESPONSE_TYPE_OFFSET (0U)
+#define ATLAS_JOINT_RESPONSE_TYPE_OFFSET \
+    (ATLAS_JOINT_RESPONSE_RESULT_OFFSET + ATLAS_JOINT_RESPONSE_RESULT_SIZE)
 #define ATLAS_JOINT_RESPONSE_TYPE_SIZE (sizeof(atlas_joint_response_type_t))
 
 typedef struct {
     atlas_joint_state_t state;
-    bool success;
 } atlas_joint_response_payload_get_state_t;
 
 typedef struct {
     atlas_joint_measure_t measure;
-    bool success;
 } atlas_joint_response_payload_get_measure_t;
 
 typedef struct {
-    bool success;
 } atlas_joint_response_payload_set_state_t;
 
 typedef struct {
-    bool success;
 } atlas_joint_response_payload_set_reference_t;
 
 typedef struct {
-    bool success;
 } atlas_joint_response_payload_set_parameters_t;
 
 typedef union {
@@ -242,6 +246,7 @@ typedef union {
     (sizeof(atlas_joint_response_payload_t))
 
 typedef struct {
+    atlas_joint_response_result_t result;
     atlas_joint_response_type_t type;
     atlas_joint_response_payload_t payload;
 } atlas_joint_response_t;

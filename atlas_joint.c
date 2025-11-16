@@ -525,12 +525,188 @@ void atlas_joint_command_encode_binary(
                                               payload_buffer);
 }
 
+static inline void atlas_joint_command_type_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_command_type_t* type)
+{
+    uint8x4_t type_buffer;
+    memcpy(type_buffer.data, buffer, 4UL);
+    *type = uint8x4_be_to_uint32(type_buffer);
+}
+
+static inline void atlas_joint_command_payload_get_state_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_command_payload_get_state_t* get_state)
+{}
+
+static inline void atlas_joint_command_payload_get_measure_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_command_payload_get_measure_t* get_measure)
+{}
+
+static inline void atlas_joint_command_payload_set_state_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_command_payload_set_state_t* set_state)
+{
+    atlas_joint_state_decode_binary(
+        (const uint8_t (*)[ATLAS_JOINT_STATE_SIZE])buffer,
+        &set_state->state);
+}
+
+static inline void atlas_joint_command_payload_set_reference_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_command_payload_set_reference_t* set_reference)
+{
+    atlas_joint_reference_decode_binary(
+        (const uint8_t (*)[ATLAS_JOINT_REFERENCE_SIZE])buffer,
+        &set_reference->reference);
+}
+
+static inline void atlas_joint_command_payload_set_parameters_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_command_payload_set_parameters_t* set_parameters)
+{
+    atlas_joint_parameters_decode_binary(
+        (const uint8_t (*)[ATLAS_JOINT_PARAMETERS_SIZE])buffer,
+        &set_parameters->parameters);
+}
+
+static inline void atlas_joint_command_payload_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_command_type_t type,
+    atlas_joint_command_payload_t* payload)
+{
+    switch (type) {
+        case ATLAS_JOINT_COMMAND_TYPE_GET_STATE: {
+            atlas_joint_command_payload_get_state_decode_binary(
+                buffer,
+                &payload->get_state);
+        } break;
+        case ATLAS_JOINT_COMMAND_TYPE_GET_MEASURE: {
+            atlas_joint_command_payload_get_measure_decode_binary(
+                buffer,
+                &payload->get_measure);
+        } break;
+        case ATLAS_JOINT_COMMAND_TYPE_SET_STATE: {
+            atlas_joint_command_payload_set_state_decode_binary(
+                buffer,
+                &payload->set_state);
+        } break;
+        case ATLAS_JOINT_COMMAND_TYPE_SET_REFERENCE: {
+            atlas_joint_command_payload_set_reference_decode_binary(
+                buffer,
+                &payload->set_reference);
+        } break;
+        case ATLAS_JOINT_COMMAND_TYPE_SET_PARAMETERS: {
+            atlas_joint_command_payload_set_parameters_decode_binary(
+                buffer,
+                &payload->set_parameters);
+        } break;
+        default: {
+        } break;
+    }
+}
+
 void atlas_joint_command_decode_binary(
     const uint8_t (*buffer)[ATLAS_JOINT_COMMAND_SIZE],
     atlas_joint_command_t* command)
 {
     ATLAS_ASSERT(buffer != NULL);
     ATLAS_ASSERT(command != NULL);
+
+    uint8_t const* type_buffer = *buffer + ATLAS_JOINT_COMMAND_TYPE_OFFSET;
+    atlas_joint_command_type_decode_binary(type_buffer, &command->type);
+
+    uint8_t const* payload_buffer =
+        *buffer + ATLAS_JOINT_COMMAND_PAYLOAD_OFFSET;
+    atlas_joint_command_payload_decode_binary(type_buffer,
+                                              command->type,
+                                              &command->payload);
+}
+
+static inline void atlas_joint_response_result_encode_binary(
+    atlas_joint_response_result_t result,
+    uint8_t* buffer)
+{
+    uint8x4_t result_buffer = uint32_to_uint8x4_be(result);
+    memcpy(buffer, result_buffer.data, 4UL);
+}
+
+static inline void atlas_joint_response_type_encode_binary(
+    atlas_joint_response_type_t type,
+    uint8_t* buffer)
+{
+    uint8x4_t type_buffer = uint32_to_uint8x4_be(type);
+    memcpy(buffer, type_buffer.data, 4UL);
+}
+
+static inline void atlas_joint_response_payload_get_state_encode_binary(
+    atlas_joint_response_payload_get_state_t const* get_state,
+    uint8_t* buffer)
+{
+    atlas_joint_state_encode_binary(
+        get_state->state,
+        (uint8_t (*)[ATLAS_JOINT_STATE_SIZE])buffer);
+}
+
+static inline void atlas_joint_response_payload_get_measure_encode_binary(
+    atlas_joint_response_payload_get_measure_t const* get_measure,
+    uint8_t* buffer)
+{
+    atlas_joint_measure_encode_binary(
+        &get_measure->measure,
+        (uint8_t (*)[ATLAS_JOINT_MEASURE_SIZE])buffer);
+}
+
+static inline void atlas_joint_response_payload_set_state_encode_binary(
+    atlas_joint_response_payload_set_state_t const* set_state,
+    uint8_t* buffer)
+{}
+
+static inline void atlas_joint_response_payload_set_reference_encode_binary(
+    atlas_joint_response_payload_set_reference_t const* set_reference,
+    uint8_t* buffer)
+{}
+
+static inline void atlas_joint_response_payload_set_parameters_encode_binary(
+    atlas_joint_response_payload_set_parameters_t const* set_parameters,
+    uint8_t* buffer)
+{}
+
+static inline void atlas_joint_response_payload_encode_binary(
+    atlas_joint_response_type_t type,
+    atlas_joint_response_payload_t const* payload,
+    uint8_t* buffer)
+{
+    switch (type) {
+        case ATLAS_JOINT_RESPONSE_TYPE_GET_STATE: {
+            atlas_joint_response_payload_get_state_encode_binary(
+                &payload->get_state,
+                buffer);
+        } break;
+        case ATLAS_JOINT_RESPONSE_TYPE_GET_MEASURE: {
+            atlas_joint_response_payload_get_measure_encode_binary(
+                &payload->get_measure,
+                buffer);
+        } break;
+        case ATLAS_JOINT_RESPONSE_TYPE_SET_STATE: {
+            atlas_joint_response_payload_set_state_encode_binary(
+                &payload->set_state,
+                buffer);
+        } break;
+        case ATLAS_JOINT_RESPONSE_TYPE_SET_REFERENCE: {
+            atlas_joint_response_payload_set_reference_encode_binary(
+                &payload->set_reference,
+                buffer);
+        } break;
+        case ATLAS_JOINT_RESPONSE_TYPE_SET_PARAMETERS: {
+            atlas_joint_response_payload_set_parameters_encode_binary(
+                &payload->set_parameters,
+                buffer);
+        } break;
+        default: {
+        } break;
+    }
 }
 
 void atlas_joint_response_encode_binary(
@@ -539,6 +715,104 @@ void atlas_joint_response_encode_binary(
 {
     ATLAS_ASSERT(response != NULL);
     ATLAS_ASSERT(buffer != NULL);
+
+    uint8_t* result_buffer = *buffer + ATLAS_JOINT_RESPONSE_RESULT_OFFSET;
+    atlas_joint_response_result_encode_binary(response->result, result_buffer);
+
+    uint8_t* type_buffer = *buffer + ATLAS_JOINT_RESPONSE_TYPE_OFFSET;
+    atlas_joint_response_type_encode_binary(response->type, type_buffer);
+
+    uint8_t* payload_buffer = *buffer + ATLAS_JOINT_RESPONSE_PAYLOAD_OFFSET;
+    atlas_joint_response_payload_encode_binary(response->type,
+                                               &response->payload,
+                                               payload_buffer);
+}
+
+static inline void atlas_joint_response_result_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_response_result_t* result)
+{
+    uint8x4_t result_buffer;
+    memcpy(buffer, result_buffer.data, 4UL);
+    *result = uint8x4_be_to_uint32(result_buffer);
+}
+
+static inline void atlas_joint_response_type_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_response_type_t* type)
+{
+    uint8x4_t type_buffer;
+    memcpy(buffer, type_buffer.data, 4UL);
+    *type = uint8x4_be_to_uint32(type_buffer);
+}
+
+static inline void atlas_joint_response_payload_get_state_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_response_payload_get_state_t* get_state)
+{
+    atlas_joint_state_decode_binary(
+        (const uint8_t (*)[ATLAS_JOINT_STATE_SIZE])buffer,
+        &get_state->state);
+}
+
+static inline void atlas_joint_response_payload_get_measure_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_response_payload_get_measure_t* get_measure)
+{
+    atlas_joint_measure_decode_binary(
+        (const uint8_t (*)[ATLAS_JOINT_MEASURE_SIZE])buffer,
+        &get_measure->measure);
+}
+
+static inline void atlas_joint_response_payload_set_state_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_response_payload_set_state_t* set_state)
+{}
+
+static inline void atlas_joint_response_payload_set_reference_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_response_payload_set_reference_t* set_reference)
+{}
+
+static inline void atlas_joint_response_payload_set_parameters_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_response_payload_set_parameters_t* set_parameters)
+{}
+
+static inline void atlas_joint_response_payload_decode_binary(
+    uint8_t const* buffer,
+    atlas_joint_response_type_t type,
+    atlas_joint_response_payload_t* payload)
+{
+    switch (type) {
+        case ATLAS_JOINT_RESPONSE_TYPE_GET_STATE: {
+            atlas_joint_response_payload_get_state_decode_binary(
+                buffer,
+                &payload->get_state);
+        } break;
+        case ATLAS_JOINT_RESPONSE_TYPE_GET_MEASURE: {
+            atlas_joint_response_payload_get_measure_decode_binary(
+                buffer,
+                &payload->get_measure);
+        } break;
+        case ATLAS_JOINT_RESPONSE_TYPE_SET_STATE: {
+            atlas_joint_response_payload_set_state_decode_binary(
+                buffer,
+                &payload->set_state);
+        } break;
+        case ATLAS_JOINT_RESPONSE_TYPE_SET_REFERENCE: {
+            atlas_joint_response_payload_set_reference_decode_binary(
+                buffer,
+                &payload->set_reference);
+        } break;
+        case ATLAS_JOINT_RESPONSE_TYPE_SET_PARAMETERS: {
+            atlas_joint_response_payload_set_parameters_decode_binary(
+                buffer,
+                &payload->set_parameters);
+        } break;
+        default: {
+        } break;
+    }
 }
 
 void atlas_joint_response_decode_binary(
@@ -547,8 +821,21 @@ void atlas_joint_response_decode_binary(
 {
     ATLAS_ASSERT(buffer != NULL);
     ATLAS_ASSERT(response != NULL);
+
+    uint8_t const* result_buffer = *buffer + ATLAS_JOINT_RESPONSE_RESULT_OFFSET;
+    atlas_joint_response_result_decode_binary(result_buffer, &response->result);
+
+    uint8_t const* type_buffer = *buffer + ATLAS_JOINT_RESPONSE_TYPE_OFFSET;
+    atlas_joint_response_type_decode_binary(type_buffer, &response->type);
+
+    uint8_t const* payload_buffer =
+        *buffer + ATLAS_JOINT_RESPONSE_PAYLOAD_OFFSET;
+    atlas_joint_response_payload_decode_binary(payload_buffer,
+                                               response->type,
+                                               &response->payload);
 }
 
+/* TODO */
 void atlas_joint_command_encode_symbolic(atlas_joint_command_t const* command,
                                          char* buffer,
                                          size_t buffer_len)
@@ -583,3 +870,5 @@ void atlas_joint_response_decode_symbolic(char const* buffer,
     ATLAS_ASSERT(strlen(buffer) >= 0UL);
     ATLAS_ASSERT(response != NULL);
 }
+
+/* END TODO */
