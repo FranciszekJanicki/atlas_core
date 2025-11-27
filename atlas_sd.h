@@ -71,6 +71,11 @@ typedef struct {
 } atlas_sd_command_t;
 
 typedef enum {
+    ATLAS_SD_RESPONSE_RESULT_SUCCESS,
+    ATLAS_SD_RESPONSE_RESULT_FAILURE,
+} atlas_sd_response_result_t;
+
+typedef enum {
     ATLAS_SD_RESPONSE_TYPE_CARD_MOUNTED,
     ATLAS_SD_RESPONSE_TYPE_CARD_UNMOUNTED,
     ATLAS_SD_RESPONSE_TYPE_DIR_LISTED,
@@ -81,32 +86,27 @@ typedef enum {
 } atlas_sd_response_type_t;
 
 typedef struct {
-    bool success;
 } atlas_sd_response_payload_card_mounted_t;
 
 typedef struct {
-    bool success;
 } atlas_sd_response_payload_card_unmounted_t;
 
 typedef struct {
-    bool success;
+    char buffer[100];
 } atlas_sd_response_payload_dir_listed_t;
 
 typedef struct {
-    bool success;
+    char buffer[100];
 } atlas_sd_response_payload_file_cat_t;
 
 typedef struct {
-    bool success;
 } atlas_sd_response_payload_path_saved_t;
 
 typedef struct {
-    bool success;
     atlas_robot_path_t robot_path;
 } atlas_sd_response_payload_path_loaded_t;
 
 typedef struct {
-    bool success;
 } atlas_sd_response_payload_path_removed_t;
 
 typedef union {
@@ -120,6 +120,7 @@ typedef union {
 } atlas_sd_response_payload_t;
 
 typedef struct {
+    atlas_sd_response_result_t result;
     atlas_sd_response_type_t type;
     atlas_sd_response_payload_t payload;
 } atlas_sd_response_t;
