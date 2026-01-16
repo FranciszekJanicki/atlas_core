@@ -8,7 +8,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define ATLAS_DELAY(MS) vTaskDelay(pdMS_TO_TICKS(MS))
+#define ATLAS_KERNEL_STARTED() \
+    (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
+
+#define ATLAS_MALLOC(X) (ATLAS_KERNEL_STARTED() ? pvPortMalloc(X) : malloc(X))
+
+#define ATLAS_FREE(X)               \
+    do {                            \
+        if (ATLAS_KERNEL_STARTED()) \
+            vPortFree(X);                \
+        else                        \
+            free(X);           \
+    } while (0)
+
+#define ATLAS_DELAY(MS)                    \
+    do {                                   \
+        if (ATLAS_KERNEL_STARTED()) {      \
+            vTaskDelay(pdMS_TO_TICKS(MS)); \
+        } else {                           \
+            HAL_Delay(MS);                 \
+        }                                  \
+    } while (0);
 
 #define ATLAS_PANIC()             \
     do {                          \
@@ -47,7 +67,7 @@
                       __FILE__,                       \
                       __LINE__,                       \
                       #EXPR);                         \
-            vTaskDelay(100);                          \
+            vTaskDelay(100);                         \
             ATLAS_PANIC();                            \
         }                                             \
     } while (0)

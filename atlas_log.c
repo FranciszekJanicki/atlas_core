@@ -35,7 +35,7 @@ void atlas_log(char const* format, ...)
         buffer_len = STATIC_BUFFER_LEN;
         used_heap_buffer = false;
     } else {
-        char* heap_buffer = pvPortMalloc(needed_len);
+        char* heap_buffer = ATLAS_MALLOC(needed_len);
         if (heap_buffer == NULL) {
             return;
         }
@@ -53,7 +53,7 @@ void atlas_log(char const* format, ...)
 
     if (written_len < 0 || written_len != needed_len - 2) {
         if (used_heap_buffer) {
-            vPortFree(buffer);
+            ATLAS_FREE(buffer);
         } else {
             taskEXIT_CRITICAL();
         }
@@ -74,7 +74,7 @@ void atlas_log(char const* format, ...)
     _write(1, buffer, written_len);
 
     if (used_heap_buffer) {
-        vPortFree(buffer);
+        ATLAS_FREE(buffer);
     } else {
         taskEXIT_CRITICAL();
     }
